@@ -4,6 +4,7 @@ Estado: implementada una muestra funcional v0.1 para revisión del usuario. Fech
 
 ## Concepto
 
+
 Un panel de análisis de fútbol con personalidad de publicación deportiva: titulares fuertes, estructura compacta y estadísticas fáciles de leer.
 
 La referencia aportada inspira la tipografía condensada e inclinada, bordes negros, sombras sin desenfoque, esquinas redondeadas y bloques de color. Crear una identidad propia para MatchIQ; no reutilizar logos, ilustraciones o composición exacta del sitio de referencia.
