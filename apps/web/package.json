@@ -1,0 +1,10 @@
+{
+  "name": "@matchiq/web", "private": true, "type": "module",
+  "scripts": { "dev": "vite --host 127.0.0.1 --strictPort", "build": "vite build" },
+  "dependencies": {
+    "@matchiq/shared": "workspace:*", "@fontsource/barlow": "^5.2.0", "@fontsource/barlow-condensed": "^5.2.0",
+    "@tanstack/react-query": "^5.90.0", "lucide-react": "^0.468.0", "react": "^19.2.0", "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.0", "recharts": "^3.3.0"
+  },
+  "devDependencies": { "@tailwindcss/vite": "^4.1.0", "@types/react": "^19.2.0", "@types/react-dom": "^19.2.0", "@vitejs/plugin-react": "^5.0.0", "tailwindcss": "^4.1.0", "vite": "^7.2.0" }
+}
