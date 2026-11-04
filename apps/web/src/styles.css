@@ -234,6 +234,9 @@ select { width: 100%; appearance: none; -webkit-appearance: none; padding: 11px 
 .fixture-home { text-align: right; font-weight: 500; }
 .fixture-away { font-weight: 500; }
 .score { text-align: center; background: #e8eddd; border: 1px solid #c0c8b3; padding: 5px 3px; border-radius: 5px; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.score.score-win { background: #dcf5e5; border-color: #50a86b; color: #155b2b; }
+.score.score-draw { background: #fff3c4; border-color: #c39420; color: #684b00; }
+.score.score-loss { background: #fde2e2; border-color: #cf6262; color: #7f1d1d; }
 .table-scroll { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 caption { padding: 10px; text-align: left; font-size: 11px; }

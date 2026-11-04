@@ -134,9 +134,16 @@ function Reading({ data }: { data: Comparison }) {
   </section>;
 }
 
-function FixtureList({ fixtures, empty = 'No hay partidos en esta selección.' }: { fixtures: FixtureView[]; empty?: string }) {
+function FixtureList({ fixtures, teamId, empty = 'No hay partidos en esta selección.' }: { fixtures: FixtureView[]; teamId?: string; empty?: string }) {
   if (!fixtures.length) return <p className="empty-state">{empty}</p>;
-  return <div className="fixture-list">{fixtures.map((f) => <Link to={`/partidos/${f.id}`} className="fixture-row" key={f.id}><span className="fixture-date">{shortDate(f.date)}<small>{new Date(f.date).getUTCFullYear()}</small></span><span className="fixture-home">{f.homeTeam.name}</span><span className="score">{f.status === 'FT' ? `${f.home.goals ?? '—'} — ${f.away.goals ?? '—'}` : f.status === 'PST' ? 'APL.' : 'PEND.'}</span><span className="fixture-away">{f.awayTeam.name}</span><ArrowUpRight size={15} aria-hidden="true" /></Link>)}</div>;
+  return <div className="fixture-list">{fixtures.map((f) => {
+    const scoreKnown = f.status === 'FT' && f.home.goals !== null && f.away.goals !== null;
+    const ownGoals = teamId ? (f.homeId === teamId ? f.home.goals! : f.away.goals!) : f.home.goals!;
+    const opponentGoals = teamId ? (f.homeId === teamId ? f.away.goals! : f.home.goals!) : f.away.goals!;
+    const result = scoreKnown && teamId ? ownGoals === opponentGoals ? 'draw' : ownGoals > opponentGoals ? 'win' : 'loss' : undefined;
+    const resultLabel = result === 'win' ? 'Victoria del equipo' : result === 'draw' ? 'Empate' : result === 'loss' ? 'Derrota del equipo' : undefined;
+    return <Link to={`/partidos/${f.id}`} className="fixture-row" key={f.id}><span className="fixture-date">{shortDate(f.date)}<small>{new Date(f.date).getUTCFullYear()}</small></span><span className="fixture-home">{f.homeTeam.name}</span><span className={`score${result ? ` score-${result}` : ''}`} aria-label={resultLabel}>{f.status === 'FT' ? `${f.home.goals ?? '—'} — ${f.away.goals ?? '—'}` : f.status === 'PST' ? 'APL.' : 'PEND.'}</span><span className="fixture-away">{f.awayTeam.name}</span><ArrowUpRight size={15} aria-hidden="true" /></Link>;
+  })}</div>;
 }
 
 function ComparePage() {
@@ -202,7 +209,7 @@ function TeamPage() {
   return <><Link className="back-link" to="/equipos"><ArrowLeft size={16} />Todos los equipos</Link><div className="team-profile-heading"><Badge team={team} /><div><div className="eyebrow">{synthetic ? 'EQUIPO FICTICIO' : 'DATOS IMPORTADOS'} · {catalog.data?.competition.name.toLocaleUpperCase('es')}</div><h1>{team.name}</h1><p>{team.city ?? 'Ciudad no disponible'} · {team.founded === null ? 'Fundación no disponible' : `${synthetic ? 'Fundación ficticia' : 'Fundación'}: ${team.founded}`}</p></div><Link className="button primary" to={`/comparador?a=${team.id}&b=${opponent?.id ?? ''}&${query}`}><ArrowLeftRight size={17} />Comparar equipo</Link></div>
     <div className="profile-filters"><SelectField label="Temporada" value={filters.season} onChange={(season) => update({ season })}>{catalog.data?.seasons.map((season) => <option key={season} value={season}>{seasonLabel(season)}{synthetic ? ' · demo' : ''}</option>)}</SelectField><SelectField label="Muestra" value={filters.last} onChange={(last) => update({ last })}><option value="5">Últimos 5</option><option value="10">Últimos 10</option><option value="20">Últimos 20</option></SelectField><SelectField label="Condición" value={filters.venue} onChange={(venue) => update({ venue })}><option value="all">Local y visitante</option><option value="home">Solo local</option><option value="away">Solo visitante</option></SelectField><div><span className="eyebrow">FORMA RECIENTE</span><Form values={summary.form} /></div></div>
     <div className="profile-metrics">{(['goalsFor', 'goalsAgainst', 'xgFor', 'xgAgainst', 'halftimeGoalsFor', 'halftimeGoalsAgainst', 'shots', 'shotsOnTarget', 'corners', 'fouls', 'yellows', 'redCards'] as MetricKey[]).map((key) => { const metric = summary.metrics?.[key]; return <article className="panel mini-metric" key={key}><span>{metricLabels[key]}</span><strong>{metric ? number(metric.value, key.startsWith('xg') ? 2 : 1) : '—'}</strong><small>{metric ? `por partido · ${metric.valid}/${summary.total} con dato` : 'Estadística aún no disponible'}</small></article>; })}</div>
-    <div className="profile-grid"><section className="panel"><div className="section-head"><div><h2>Resultados disponibles</h2><p>{summary.total} partidos finalizados · {seasonLabel(filters.season)}</p></div><CalendarDays size={19} /></div><FixtureList fixtures={fixtures} /></section><TrendChart summary={{ ...summary, team }} /></div><Source provenance={provenance} />
+    <div className="profile-grid"><section className="panel"><div className="section-head"><div><h2>Resultados disponibles</h2><p>{summary.total} partidos finalizados · {seasonLabel(filters.season)}</p></div><CalendarDays size={19} /></div><FixtureList fixtures={fixtures} teamId={team.id} /></section><TrendChart summary={{ ...summary, team }} /></div><Source provenance={provenance} />
   </>;
 }
 
