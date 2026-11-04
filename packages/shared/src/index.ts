@@ -10,13 +10,16 @@ export const compareQuerySchema = filtersSchema.extend({
 }).refine((q) => q.a !== q.b, { message: 'Selecciona dos equipos diferentes.', path: ['b'] });
 export type Filters = z.infer<typeof filtersSchema>;
 export type Team = { id: string; name: string; shortName: string; initials: string; city: string | null; founded: number | null };
-export type SideStats = { goals: number | null; corners: number | null; yellows: number | null; shots: number | null };
+export type SideStats = {
+  goals: number | null; corners: number | null; yellows: number | null; shots: number | null;
+  halftimeGoals?: number | null; expectedGoals?: number | null; shotsOnTarget?: number | null; fouls?: number | null; redCards?: number | null;
+};
 export type Fixture = {
   id: string; season: string; date: string; homeId: string; awayId: string;
   status: 'FT' | 'NS' | 'PST' | 'LIVE' | 'AET' | 'PEN' | 'CANC' | 'ABD' | 'SUSP' | 'AWD' | 'WO' | 'TBD' | 'OTHER'; home: SideStats; away: SideStats;
 };
 export type Metric = { value: number | null; valid: number; total: number; unit: 'por partido' | '%' };
-export type MetricKey = 'goalsFor' | 'goalsAgainst' | 'corners' | 'yellows' | 'shots' | 'btts' | 'over25';
+export type MetricKey = 'goalsFor' | 'goalsAgainst' | 'halftimeGoalsFor' | 'halftimeGoalsAgainst' | 'xgFor' | 'xgAgainst' | 'corners' | 'yellows' | 'redCards' | 'shots' | 'shotsOnTarget' | 'fouls' | 'btts' | 'over25';
 export type TeamSummary = {
   teamId: string; total: number; metrics: Record<MetricKey, Metric>;
   results: { wins: number; draws: number; losses: number; valid: number };
@@ -35,6 +38,7 @@ export type Comparison = {
 };
 export type TeamDetail = { team: Team; summary: TeamSummary; fixtures: FixtureView[]; provenance: Provenance; filters: Filters };
 export const metricLabels: Record<MetricKey, string> = {
-  goalsFor: 'Goles a favor', goalsAgainst: 'Goles en contra', corners: 'Córners a favor',
-  yellows: 'Tarjetas amarillas', shots: 'Tiros totales', btts: 'Ambos marcan', over25: 'Más de 2,5 goles',
+  goalsFor: 'Goles a favor', goalsAgainst: 'Goles en contra', halftimeGoalsFor: 'Goles al descanso a favor', halftimeGoalsAgainst: 'Goles al descanso en contra',
+  xgFor: 'xG a favor', xgAgainst: 'xG en contra', corners: 'Córners a favor', yellows: 'Tarjetas amarillas', redCards: 'Tarjetas rojas',
+  shots: 'Tiros totales', shotsOnTarget: 'Tiros a puerta', fouls: 'Faltas cometidas', btts: 'Ambos marcan', over25: 'Más de 2,5 goles',
 };
