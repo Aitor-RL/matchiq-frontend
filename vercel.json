@@ -3,8 +3,24 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "source": "/inicio",
+      "destination": "/inicio.html"
+    },
+    {
+      "source": "/equipos",
+      "destination": "/equipos.html"
+    },
+    {
+      "source": "/comparador",
+      "destination": "/comparador.html"
+    },
+    {
+      "source": "/equipos/:id",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/partidos/:id",
+      "destination": "/app.html"
     }
   ],
   "headers": [
@@ -20,9 +36,26 @@
           "value": "strict-origin-when-cross-origin"
         }
       ]
+    },
+    {
+      "source": "/app.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex,follow"
+        }
+      ]
     }
   ],
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm build",
-  "outputDirectory": "apps/web/dist"
+  "outputDirectory": "apps/web/dist",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/inicio",
+      "permanent": true
+    }
+  ],
+  "trailingSlash": false
 }

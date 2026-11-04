@@ -1,0 +1,1118 @@
+{
+  "catalog": {
+    "teams": [
+      {
+        "id": "bruma",
+        "name": "Bruma FC",
+        "shortName": "Bruma",
+        "initials": "BR",
+        "city": "Ciudad Bruma · ficticia",
+        "founded": 1924
+      },
+      {
+        "id": "faro",
+        "name": "Unión Faro",
+        "shortName": "Faro",
+        "initials": "UF",
+        "city": "Puerto Faro · ficticia",
+        "founded": 1932
+      },
+      {
+        "id": "sierra",
+        "name": "Racing Sierra",
+        "shortName": "Sierra",
+        "initials": "RS",
+        "city": "Villa Sierra · ficticia",
+        "founded": 1941
+      },
+      {
+        "id": "norte",
+        "name": "Deportivo Norte",
+        "shortName": "Norte",
+        "initials": "DN",
+        "city": "Ciudad Norte · ficticia",
+        "founded": 1919
+      },
+      {
+        "id": "delta",
+        "name": "Sporting Delta",
+        "shortName": "Delta",
+        "initials": "SD",
+        "city": "Villa Delta · ficticia",
+        "founded": 1956
+      },
+      {
+        "id": "atlas",
+        "name": "Atlético Atlas",
+        "shortName": "Atlas",
+        "initials": "AA",
+        "city": "Ciudad Atlas · ficticia",
+        "founded": 1928
+      }
+    ],
+    "competition": {
+      "id": "demo-league",
+      "name": "Liga de prueba",
+      "country": "Universo MatchIQ"
+    },
+    "seasons": [
+      "2024",
+      "2023"
+    ],
+    "provenance": {
+      "mode": "synthetic",
+      "source": "MatchIQ · conjunto de prueba v1",
+      "updatedAt": "2025-01-27T12:00:00Z",
+      "note": "Equipos, fechas, resultados y estadísticas ficticios. No proceden de API-Football."
+    }
+  },
+  "comparison": {
+    "filters": {
+      "season": "2024",
+      "last": "10",
+      "venue": "all"
+    },
+    "a": {
+      "teamId": "bruma",
+      "total": 10,
+      "metrics": {
+        "goalsFor": {
+          "value": 1.9,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "goalsAgainst": {
+          "value": 0.6,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "corners": {
+          "value": 5.25,
+          "valid": 8,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "yellows": {
+          "value": 2,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "shots": {
+          "value": 13.444444444444445,
+          "valid": 9,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "btts": {
+          "value": 30,
+          "valid": 10,
+          "total": 10,
+          "unit": "%"
+        },
+        "over25": {
+          "value": 50,
+          "valid": 10,
+          "total": 10,
+          "unit": "%"
+        }
+      },
+      "results": {
+        "wins": 7,
+        "draws": 2,
+        "losses": 1,
+        "valid": 10
+      },
+      "form": [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W"
+      ],
+      "fixtureIds": [
+        "demo-2024-19-0",
+        "demo-2024-18-0",
+        "demo-2024-17-0",
+        "demo-2024-16-0",
+        "demo-2024-15-0",
+        "demo-2024-14-0",
+        "demo-2024-13-0",
+        "demo-2024-12-0",
+        "demo-2024-11-0",
+        "demo-2024-10-0"
+      ],
+      "period": {
+        "from": "2024-11-10T16:00:00.000Z",
+        "to": "2025-01-12T16:00:00.000Z"
+      },
+      "trend": [
+        {
+          "fixtureId": "demo-2024-10-0",
+          "date": "2024-11-10T16:00:00.000Z",
+          "opponentId": "atlas",
+          "goalsFor": 2,
+          "goalsAgainst": 2
+        },
+        {
+          "fixtureId": "demo-2024-11-0",
+          "date": "2024-11-17T16:00:00.000Z",
+          "opponentId": "delta",
+          "goalsFor": 3,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-12-0",
+          "date": "2024-11-24T16:00:00.000Z",
+          "opponentId": "norte",
+          "goalsFor": 2,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-13-0",
+          "date": "2024-12-01T16:00:00.000Z",
+          "opponentId": "sierra",
+          "goalsFor": 0,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-14-0",
+          "date": "2024-12-08T16:00:00.000Z",
+          "opponentId": "faro",
+          "goalsFor": 2,
+          "goalsAgainst": 1
+        },
+        {
+          "fixtureId": "demo-2024-15-0",
+          "date": "2024-12-15T16:00:00.000Z",
+          "opponentId": "atlas",
+          "goalsFor": 2,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-16-0",
+          "date": "2024-12-22T16:00:00.000Z",
+          "opponentId": "delta",
+          "goalsFor": 2,
+          "goalsAgainst": 3
+        },
+        {
+          "fixtureId": "demo-2024-17-0",
+          "date": "2024-12-29T16:00:00.000Z",
+          "opponentId": "norte",
+          "goalsFor": 3,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-18-0",
+          "date": "2025-01-05T16:00:00.000Z",
+          "opponentId": "sierra",
+          "goalsFor": 2,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-19-0",
+          "date": "2025-01-12T16:00:00.000Z",
+          "opponentId": "faro",
+          "goalsFor": 1,
+          "goalsAgainst": 0
+        }
+      ],
+      "team": {
+        "id": "bruma",
+        "name": "Bruma FC",
+        "shortName": "Bruma",
+        "initials": "BR",
+        "city": "Ciudad Bruma · ficticia",
+        "founded": 1924
+      }
+    },
+    "b": {
+      "teamId": "faro",
+      "total": 10,
+      "metrics": {
+        "goalsFor": {
+          "value": 1.2,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "goalsAgainst": {
+          "value": 1.4,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "corners": {
+          "value": 6,
+          "valid": 9,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "yellows": {
+          "value": 1.8,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "shots": {
+          "value": 11.333333333333334,
+          "valid": 9,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "btts": {
+          "value": 40,
+          "valid": 10,
+          "total": 10,
+          "unit": "%"
+        },
+        "over25": {
+          "value": 50,
+          "valid": 10,
+          "total": 10,
+          "unit": "%"
+        }
+      },
+      "results": {
+        "wins": 2,
+        "draws": 2,
+        "losses": 6,
+        "valid": 10
+      },
+      "form": [
+        "L",
+        "W",
+        "L",
+        "W",
+        "L"
+      ],
+      "fixtureIds": [
+        "demo-2024-19-0",
+        "demo-2024-17-2",
+        "demo-2024-16-2",
+        "demo-2024-15-1",
+        "demo-2024-14-0",
+        "demo-2024-13-1",
+        "demo-2024-12-2",
+        "demo-2024-11-2",
+        "demo-2024-10-1",
+        "demo-2024-9-0"
+      ],
+      "period": {
+        "from": "2024-11-03T16:00:00.000Z",
+        "to": "2025-01-12T16:00:00.000Z"
+      },
+      "trend": [
+        {
+          "fixtureId": "demo-2024-9-0",
+          "date": "2024-11-03T16:00:00.000Z",
+          "opponentId": "bruma",
+          "goalsFor": 0,
+          "goalsAgainst": 1
+        },
+        {
+          "fixtureId": "demo-2024-10-1",
+          "date": "2024-11-10T18:00:00.000Z",
+          "opponentId": "delta",
+          "goalsFor": 2,
+          "goalsAgainst": 2
+        },
+        {
+          "fixtureId": "demo-2024-11-2",
+          "date": "2024-11-17T20:00:00.000Z",
+          "opponentId": "sierra",
+          "goalsFor": 3,
+          "goalsAgainst": 3
+        },
+        {
+          "fixtureId": "demo-2024-12-2",
+          "date": "2024-11-24T20:00:00.000Z",
+          "opponentId": "atlas",
+          "goalsFor": 0,
+          "goalsAgainst": 1
+        },
+        {
+          "fixtureId": "demo-2024-13-1",
+          "date": "2024-12-01T18:00:00.000Z",
+          "opponentId": "norte",
+          "goalsFor": 0,
+          "goalsAgainst": 1
+        },
+        {
+          "fixtureId": "demo-2024-14-0",
+          "date": "2024-12-08T16:00:00.000Z",
+          "opponentId": "bruma",
+          "goalsFor": 1,
+          "goalsAgainst": 2
+        },
+        {
+          "fixtureId": "demo-2024-15-1",
+          "date": "2024-12-15T18:00:00.000Z",
+          "opponentId": "delta",
+          "goalsFor": 2,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-16-2",
+          "date": "2024-12-22T20:00:00.000Z",
+          "opponentId": "sierra",
+          "goalsFor": 1,
+          "goalsAgainst": 3
+        },
+        {
+          "fixtureId": "demo-2024-17-2",
+          "date": "2024-12-29T20:00:00.000Z",
+          "opponentId": "atlas",
+          "goalsFor": 3,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-19-0",
+          "date": "2025-01-12T16:00:00.000Z",
+          "opponentId": "bruma",
+          "goalsFor": 0,
+          "goalsAgainst": 1
+        }
+      ],
+      "team": {
+        "id": "faro",
+        "name": "Unión Faro",
+        "shortName": "Faro",
+        "initials": "UF",
+        "city": "Puerto Faro · ficticia",
+        "founded": 1932
+      }
+    },
+    "headToHead": [
+      {
+        "id": "demo-2024-19-0",
+        "season": "2024",
+        "date": "2025-01-12T16:00:00.000Z",
+        "homeId": "faro",
+        "awayId": "bruma",
+        "status": "FT",
+        "home": {
+          "goals": 0,
+          "corners": 5,
+          "yellows": 1,
+          "shots": 8
+        },
+        "away": {
+          "goals": 1,
+          "corners": 6,
+          "yellows": 2,
+          "shots": 9
+        },
+        "homeTeam": {
+          "id": "faro",
+          "name": "Unión Faro",
+          "shortName": "Faro",
+          "initials": "UF",
+          "city": "Puerto Faro · ficticia",
+          "founded": 1932
+        },
+        "awayTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        }
+      },
+      {
+        "id": "demo-2024-14-0",
+        "season": "2024",
+        "date": "2024-12-08T16:00:00.000Z",
+        "homeId": "bruma",
+        "awayId": "faro",
+        "status": "FT",
+        "home": {
+          "goals": 2,
+          "corners": 8,
+          "yellows": 1,
+          "shots": 17
+        },
+        "away": {
+          "goals": 1,
+          "corners": 9,
+          "yellows": 2,
+          "shots": null
+        },
+        "homeTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        },
+        "awayTeam": {
+          "id": "faro",
+          "name": "Unión Faro",
+          "shortName": "Faro",
+          "initials": "UF",
+          "city": "Puerto Faro · ficticia",
+          "founded": 1932
+        }
+      },
+      {
+        "id": "demo-2024-9-0",
+        "season": "2024",
+        "date": "2024-11-03T16:00:00.000Z",
+        "homeId": "faro",
+        "awayId": "bruma",
+        "status": "FT",
+        "home": {
+          "goals": 0,
+          "corners": null,
+          "yellows": 1,
+          "shots": 13
+        },
+        "away": {
+          "goals": 1,
+          "corners": 4,
+          "yellows": 2,
+          "shots": 14
+        },
+        "homeTeam": {
+          "id": "faro",
+          "name": "Unión Faro",
+          "shortName": "Faro",
+          "initials": "UF",
+          "city": "Puerto Faro · ficticia",
+          "founded": 1932
+        },
+        "awayTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        }
+      },
+      {
+        "id": "demo-2024-4-0",
+        "season": "2024",
+        "date": "2024-09-29T16:00:00.000Z",
+        "homeId": "bruma",
+        "awayId": "faro",
+        "status": "FT",
+        "home": {
+          "goals": 2,
+          "corners": 6,
+          "yellows": 1,
+          "shots": 9
+        },
+        "away": {
+          "goals": 2,
+          "corners": null,
+          "yellows": 2,
+          "shots": 10
+        },
+        "homeTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        },
+        "awayTeam": {
+          "id": "faro",
+          "name": "Unión Faro",
+          "shortName": "Faro",
+          "initials": "UF",
+          "city": "Puerto Faro · ficticia",
+          "founded": 1932
+        }
+      }
+    ],
+    "provenance": {
+      "mode": "synthetic",
+      "source": "MatchIQ · conjunto de prueba v1",
+      "updatedAt": "2025-01-27T12:00:00Z",
+      "note": "Equipos, fechas, resultados y estadísticas ficticios. No proceden de API-Football."
+    }
+  },
+  "team": {
+    "team": {
+      "id": "bruma",
+      "name": "Bruma FC",
+      "shortName": "Bruma",
+      "initials": "BR",
+      "city": "Ciudad Bruma · ficticia",
+      "founded": 1924
+    },
+    "summary": {
+      "teamId": "bruma",
+      "total": 10,
+      "metrics": {
+        "goalsFor": {
+          "value": 1.9,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "goalsAgainst": {
+          "value": 0.6,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "corners": {
+          "value": 5.25,
+          "valid": 8,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "yellows": {
+          "value": 2,
+          "valid": 10,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "shots": {
+          "value": 13.444444444444445,
+          "valid": 9,
+          "total": 10,
+          "unit": "por partido"
+        },
+        "btts": {
+          "value": 30,
+          "valid": 10,
+          "total": 10,
+          "unit": "%"
+        },
+        "over25": {
+          "value": 50,
+          "valid": 10,
+          "total": 10,
+          "unit": "%"
+        }
+      },
+      "results": {
+        "wins": 7,
+        "draws": 2,
+        "losses": 1,
+        "valid": 10
+      },
+      "form": [
+        "W",
+        "W",
+        "W",
+        "L",
+        "W"
+      ],
+      "fixtureIds": [
+        "demo-2024-19-0",
+        "demo-2024-18-0",
+        "demo-2024-17-0",
+        "demo-2024-16-0",
+        "demo-2024-15-0",
+        "demo-2024-14-0",
+        "demo-2024-13-0",
+        "demo-2024-12-0",
+        "demo-2024-11-0",
+        "demo-2024-10-0"
+      ],
+      "period": {
+        "from": "2024-11-10T16:00:00.000Z",
+        "to": "2025-01-12T16:00:00.000Z"
+      },
+      "trend": [
+        {
+          "fixtureId": "demo-2024-10-0",
+          "date": "2024-11-10T16:00:00.000Z",
+          "opponentId": "atlas",
+          "goalsFor": 2,
+          "goalsAgainst": 2
+        },
+        {
+          "fixtureId": "demo-2024-11-0",
+          "date": "2024-11-17T16:00:00.000Z",
+          "opponentId": "delta",
+          "goalsFor": 3,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-12-0",
+          "date": "2024-11-24T16:00:00.000Z",
+          "opponentId": "norte",
+          "goalsFor": 2,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-13-0",
+          "date": "2024-12-01T16:00:00.000Z",
+          "opponentId": "sierra",
+          "goalsFor": 0,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-14-0",
+          "date": "2024-12-08T16:00:00.000Z",
+          "opponentId": "faro",
+          "goalsFor": 2,
+          "goalsAgainst": 1
+        },
+        {
+          "fixtureId": "demo-2024-15-0",
+          "date": "2024-12-15T16:00:00.000Z",
+          "opponentId": "atlas",
+          "goalsFor": 2,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-16-0",
+          "date": "2024-12-22T16:00:00.000Z",
+          "opponentId": "delta",
+          "goalsFor": 2,
+          "goalsAgainst": 3
+        },
+        {
+          "fixtureId": "demo-2024-17-0",
+          "date": "2024-12-29T16:00:00.000Z",
+          "opponentId": "norte",
+          "goalsFor": 3,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-18-0",
+          "date": "2025-01-05T16:00:00.000Z",
+          "opponentId": "sierra",
+          "goalsFor": 2,
+          "goalsAgainst": 0
+        },
+        {
+          "fixtureId": "demo-2024-19-0",
+          "date": "2025-01-12T16:00:00.000Z",
+          "opponentId": "faro",
+          "goalsFor": 1,
+          "goalsAgainst": 0
+        }
+      ]
+    },
+    "fixtures": [
+      {
+        "id": "demo-2024-19-0",
+        "season": "2024",
+        "date": "2025-01-12T16:00:00.000Z",
+        "homeId": "faro",
+        "awayId": "bruma",
+        "status": "FT",
+        "home": {
+          "goals": 0,
+          "corners": 5,
+          "yellows": 1,
+          "shots": 8
+        },
+        "away": {
+          "goals": 1,
+          "corners": 6,
+          "yellows": 2,
+          "shots": 9
+        },
+        "homeTeam": {
+          "id": "faro",
+          "name": "Unión Faro",
+          "shortName": "Faro",
+          "initials": "UF",
+          "city": "Puerto Faro · ficticia",
+          "founded": 1932
+        },
+        "awayTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        }
+      },
+      {
+        "id": "demo-2024-18-0",
+        "season": "2024",
+        "date": "2025-01-05T16:00:00.000Z",
+        "homeId": "bruma",
+        "awayId": "sierra",
+        "status": "FT",
+        "home": {
+          "goals": 2,
+          "corners": 4,
+          "yellows": 3,
+          "shots": 15
+        },
+        "away": {
+          "goals": 0,
+          "corners": null,
+          "yellows": null,
+          "shots": 16
+        },
+        "homeTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        },
+        "awayTeam": {
+          "id": "sierra",
+          "name": "Racing Sierra",
+          "shortName": "Sierra",
+          "initials": "RS",
+          "city": "Villa Sierra · ficticia",
+          "founded": 1941
+        }
+      },
+      {
+        "id": "demo-2024-17-0",
+        "season": "2024",
+        "date": "2024-12-29T16:00:00.000Z",
+        "homeId": "norte",
+        "awayId": "bruma",
+        "status": "FT",
+        "home": {
+          "goals": 0,
+          "corners": 3,
+          "yellows": 0,
+          "shots": 9
+        },
+        "away": {
+          "goals": 3,
+          "corners": 4,
+          "yellows": 1,
+          "shots": 10
+        },
+        "homeTeam": {
+          "id": "norte",
+          "name": "Deportivo Norte",
+          "shortName": "Norte",
+          "initials": "DN",
+          "city": "Ciudad Norte · ficticia",
+          "founded": 1919
+        },
+        "awayTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        }
+      },
+      {
+        "id": "demo-2024-16-0",
+        "season": "2024",
+        "date": "2024-12-22T16:00:00.000Z",
+        "homeId": "bruma",
+        "awayId": "delta",
+        "status": "FT",
+        "home": {
+          "goals": 2,
+          "corners": null,
+          "yellows": 2,
+          "shots": 16
+        },
+        "away": {
+          "goals": 3,
+          "corners": 3,
+          "yellows": 3,
+          "shots": 17
+        },
+        "homeTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        },
+        "awayTeam": {
+          "id": "delta",
+          "name": "Sporting Delta",
+          "shortName": "Delta",
+          "initials": "SD",
+          "city": "Villa Delta · ficticia",
+          "founded": 1956
+        }
+      },
+      {
+        "id": "demo-2024-15-0",
+        "season": "2024",
+        "date": "2024-12-15T16:00:00.000Z",
+        "homeId": "atlas",
+        "awayId": "bruma",
+        "status": "FT",
+        "home": {
+          "goals": 0,
+          "corners": 9,
+          "yellows": 4,
+          "shots": 10
+        },
+        "away": {
+          "goals": 2,
+          "corners": 2,
+          "yellows": 0,
+          "shots": 11
+        },
+        "homeTeam": {
+          "id": "atlas",
+          "name": "Atlético Atlas",
+          "shortName": "Atlas",
+          "initials": "AA",
+          "city": "Ciudad Atlas · ficticia",
+          "founded": 1928
+        },
+        "awayTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        }
+      },
+      {
+        "id": "demo-2024-14-0",
+        "season": "2024",
+        "date": "2024-12-08T16:00:00.000Z",
+        "homeId": "bruma",
+        "awayId": "faro",
+        "status": "FT",
+        "home": {
+          "goals": 2,
+          "corners": 8,
+          "yellows": 1,
+          "shots": 17
+        },
+        "away": {
+          "goals": 1,
+          "corners": 9,
+          "yellows": 2,
+          "shots": null
+        },
+        "homeTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        },
+        "awayTeam": {
+          "id": "faro",
+          "name": "Unión Faro",
+          "shortName": "Faro",
+          "initials": "UF",
+          "city": "Puerto Faro · ficticia",
+          "founded": 1932
+        }
+      },
+      {
+        "id": "demo-2024-13-0",
+        "season": "2024",
+        "date": "2024-12-01T16:00:00.000Z",
+        "homeId": "sierra",
+        "awayId": "bruma",
+        "status": "FT",
+        "home": {
+          "goals": 0,
+          "corners": 7,
+          "yellows": 3,
+          "shots": 11
+        },
+        "away": {
+          "goals": 0,
+          "corners": 8,
+          "yellows": 4,
+          "shots": 12
+        },
+        "homeTeam": {
+          "id": "sierra",
+          "name": "Racing Sierra",
+          "shortName": "Sierra",
+          "initials": "RS",
+          "city": "Villa Sierra · ficticia",
+          "founded": 1941
+        },
+        "awayTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        }
+      },
+      {
+        "id": "demo-2024-12-0",
+        "season": "2024",
+        "date": "2024-11-24T16:00:00.000Z",
+        "homeId": "bruma",
+        "awayId": "norte",
+        "status": "FT",
+        "home": {
+          "goals": 2,
+          "corners": 6,
+          "yellows": 0,
+          "shots": 18
+        },
+        "away": {
+          "goals": 0,
+          "corners": 7,
+          "yellows": 1,
+          "shots": 6
+        },
+        "homeTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        },
+        "awayTeam": {
+          "id": "norte",
+          "name": "Deportivo Norte",
+          "shortName": "Norte",
+          "initials": "DN",
+          "city": "Ciudad Norte · ficticia",
+          "founded": 1919
+        }
+      },
+      {
+        "id": "demo-2024-11-0",
+        "season": "2024",
+        "date": "2024-11-17T16:00:00.000Z",
+        "homeId": "delta",
+        "awayId": "bruma",
+        "status": "FT",
+        "home": {
+          "goals": 0,
+          "corners": 5,
+          "yellows": null,
+          "shots": 12
+        },
+        "away": {
+          "goals": 3,
+          "corners": null,
+          "yellows": 3,
+          "shots": 13
+        },
+        "homeTeam": {
+          "id": "delta",
+          "name": "Sporting Delta",
+          "shortName": "Delta",
+          "initials": "SD",
+          "city": "Villa Delta · ficticia",
+          "founded": 1956
+        },
+        "awayTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        }
+      },
+      {
+        "id": "demo-2024-10-0",
+        "season": "2024",
+        "date": "2024-11-10T16:00:00.000Z",
+        "homeId": "bruma",
+        "awayId": "atlas",
+        "status": "FT",
+        "home": {
+          "goals": 2,
+          "corners": 4,
+          "yellows": 4,
+          "shots": null
+        },
+        "away": {
+          "goals": 2,
+          "corners": 5,
+          "yellows": 0,
+          "shots": 7
+        },
+        "homeTeam": {
+          "id": "bruma",
+          "name": "Bruma FC",
+          "shortName": "Bruma",
+          "initials": "BR",
+          "city": "Ciudad Bruma · ficticia",
+          "founded": 1924
+        },
+        "awayTeam": {
+          "id": "atlas",
+          "name": "Atlético Atlas",
+          "shortName": "Atlas",
+          "initials": "AA",
+          "city": "Ciudad Atlas · ficticia",
+          "founded": 1928
+        }
+      }
+    ],
+    "provenance": {
+      "mode": "synthetic",
+      "source": "MatchIQ · conjunto de prueba v1",
+      "updatedAt": "2025-01-27T12:00:00Z",
+      "note": "Equipos, fechas, resultados y estadísticas ficticios. No proceden de API-Football."
+    },
+    "filters": {
+      "season": "2024",
+      "last": "10",
+      "venue": "all"
+    }
+  },
+  "fixture": {
+    "fixture": {
+      "id": "demo-2024-19-0",
+      "season": "2024",
+      "date": "2025-01-12T16:00:00.000Z",
+      "homeId": "faro",
+      "awayId": "bruma",
+      "status": "FT",
+      "home": {
+        "goals": 0,
+        "corners": 5,
+        "yellows": 1,
+        "shots": 8
+      },
+      "away": {
+        "goals": 1,
+        "corners": 6,
+        "yellows": 2,
+        "shots": 9
+      },
+      "homeTeam": {
+        "id": "faro",
+        "name": "Unión Faro",
+        "shortName": "Faro",
+        "initials": "UF",
+        "city": "Puerto Faro · ficticia",
+        "founded": 1932
+      },
+      "awayTeam": {
+        "id": "bruma",
+        "name": "Bruma FC",
+        "shortName": "Bruma",
+        "initials": "BR",
+        "city": "Ciudad Bruma · ficticia",
+        "founded": 1924
+      }
+    },
+    "provenance": {
+      "mode": "synthetic",
+      "source": "MatchIQ · conjunto de prueba v1",
+      "updatedAt": "2025-01-27T12:00:00Z",
+      "note": "Equipos, fechas, resultados y estadísticas ficticios. No proceden de API-Football."
+    }
+  }
+}

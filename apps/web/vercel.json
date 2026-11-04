@@ -1,12 +1,58 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
-  "headers": [{
-    "source": "/(.*)",
-    "headers": [
-      { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-    ]
-  }]
+  "rewrites": [
+    {
+      "source": "/inicio",
+      "destination": "/inicio.html"
+    },
+    {
+      "source": "/equipos",
+      "destination": "/equipos.html"
+    },
+    {
+      "source": "/comparador",
+      "destination": "/comparador.html"
+    },
+    {
+      "source": "/equipos/:id",
+      "destination": "/app.html"
+    },
+    {
+      "source": "/partidos/:id",
+      "destination": "/app.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/app.html",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex,follow"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/inicio",
+      "permanent": true
+    }
+  ],
+  "trailingSlash": false
 }

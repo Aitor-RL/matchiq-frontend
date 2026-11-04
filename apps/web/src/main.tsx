@@ -12,6 +12,7 @@ import App from './App';
 import './styles.css';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 60000, retry: false, refetchOnWindowFocus: false } } });
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode><QueryClientProvider client={queryClient}><BrowserRouter><App /></BrowserRouter></QueryClientProvider></React.StrictMode>,
-);
+const root = document.getElementById('root')!;
+const application = <React.StrictMode><QueryClientProvider client={queryClient}><BrowserRouter><App /></BrowserRouter></QueryClientProvider></React.StrictMode>;
+if (root.hasChildNodes() && ['/', '/inicio', '/comparador', '/equipos'].includes(window.location.pathname) && !window.location.search) ReactDOM.hydrateRoot(root, application);
+else ReactDOM.createRoot(root).render(application);

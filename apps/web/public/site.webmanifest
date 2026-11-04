@@ -1,0 +1,13 @@
+{
+  "name": "MatchIQ — El juego, en datos",
+  "short_name": "MatchIQ",
+  "lang": "es",
+  "start_url": "/inicio",
+  "display": "standalone",
+  "background_color": "#e8e9e5",
+  "theme_color": "#c5f451",
+  "icons": [
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

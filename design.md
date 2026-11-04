@@ -1,6 +1,6 @@
 # MatchIQ — Dirección visual
 
-Estado: implementada una muestra funcional v0.1 para revisión del usuario. Fecha: 3 de noviembre de 2026.
+Estado: dirección visual v0.3 aplicada para prueba del usuario. Fecha: 4 de noviembre de 2026.
 
 ## Concepto
 
@@ -9,7 +9,7 @@ Un panel de análisis de fútbol con personalidad de publicación deportiva: tit
 
 La referencia aportada inspira la tipografía condensada e inclinada, bordes negros, sombras sin desenfoque, esquinas redondeadas y bloques de color. Crear una identidad propia para MatchIQ; no reutilizar logos, ilustraciones o composición exacta del sitio de referencia.
 
-Esta propuesta adopta una base clara como la captura, revisando el tema oscuro del documento original. El color y la tipografía se validarán antes de construir pantallas completas.
+Esta propuesta adopta una base clara como la captura, revisando el tema oscuro del documento original. Se conservan el color y la tipografía en esta revisión; la siguiente validación es la prueba del usuario.
 
 ## Tipografía
 
@@ -99,7 +99,7 @@ Propuesta: **Comparador**, porque permite evaluar tipografía, filtros, tarjetas
 6. Una gráfica de tendencias sencilla con alternativa textual.
 7. Pie de contexto con muestra válida, origen y actualización.
 
-La primera muestra visual utiliza seis clubes ficticios: Bruma FC, Unión Faro, Racing Sierra, Deportivo Norte, Sporting Delta y Atlético Atlas. Se muestra una franja persistente «Datos sintéticos» y etiquetas «Ficticio». Todas sus cifras pertenecen a un conjunto de prueba; no se asocian a clubes reales.
+La muestra original de desarrollo y las pruebas automatizadas utilizan seis clubes ficticios: Bruma FC, Unión Faro, Racing Sierra, Deportivo Norte, Sporting Delta y Atlético Atlas. Se muestra una franja persistente «Datos sintéticos» y etiquetas «Ficticio». Todas sus cifras pertenecen a un conjunto de prueba; no se asocian a clubes reales.
 
 ## Componentes
 
@@ -153,8 +153,31 @@ Mostrar «Sin datos» o «—» para ausencias; no sustituirlas por cero. Un cer
 - Revisar 360 px, 768 px y escritorio, además de zoom al 200 %.
 - Los datos sintéticos, errores y ausencias se reconocen sin ambigüedad.
 
-## Decisiones pendientes
+## Revisión del usuario
 
-1. Confirmar Barlow Condensed ExtraBold Italic en una muestra renderizada.
-2. Confirmar lima + violeta sobre base clara, o revisar el acento hacia fucsia.
-3. Ajustar densidad después de ver el comparador en móvil y escritorio.
+La propuesta aplicada conserva Barlow Condensed 800 Italic y lima/violeta. Revisar la marca IQ, la portada, los esqueletos y la densidad del comparador antes de desplegar. Las variantes de logo están en docs/brand/proposals.png.
+
+
+## Identidad aplicada v0.3
+
+- Principal: símbolo IQ sobre baldosa negra redondeada, lima y palabra MATCHIQ en Barlow Condensed 900 Italic. Letras convertidas a contornos SVG; no dependen de fuentes externas para verse.
+- Variantes: principal, fondo oscuro, monocroma, tipográfica y campo/tendencia, en apps/web/public/brand. Se aplicó la principal como propuesta inicial.
+- Favicon SVG, iconos PNG de 180/192/512 px y tarjeta social PNG 1200×630.
+- Generador reproducible: pnpm brand:build. Tipografía OFL; licencias conservadas en docs/licenses. No se han reutilizado escudos oficiales.
+
+## Espera y navegación
+
+- Spinner de tres barras en tinta, violeta y verde oscuro; simboliza datos, sin porcentajes de progreso inventados.
+- Esqueletos para comparador, equipos, equipo, partido y gráfica. Captions accesibles, aria-busy y aviso tras ocho segundos. Timeout de red a los veinte segundos y reintento.
+- Al modificar filtros, mantener la consulta anterior con aviso explícito hasta recibir la nueva. No mezclar resultados anteriores con etiquetas de la nueva selección.
+- Sin recarga completa al cambiar de división. Las claves de caché incluyen la división; no se comparten datos de Primera y Segunda.
+- División y temporada viajan en la URL y en enlaces de navegación. Copiar comparación incluye además ambos equipos, muestra y condición; alternativa manual si no hay acceso al portapapeles.
+- Selector de Primera/Segunda únicamente en la cabecera de la página Equipos, presentado como control segmentado. No ocupa la navegación global ni aparece como error cuando el catálogo no conecta.
+- Animaciones desactivadas con prefers-reduced-motion.
+
+## SEO y rendimiento
+
+- Inicio, Equipos y Comparador se prerenderizan al compilar, con contenido inicial y metadatos. El build no consulta APIs ni almacena datos deportivos reales.
+- Títulos, descripciones, canonical, OG/Twitter, sitemap, robots y WebSite JSON-LD en Inicio. Las fichas dinámicas y vistas filtradas llevan noindex en esta fase.
+- Gráficas cargadas bajo demanda; no se descargan en Inicio. Las fuentes se autohospedan.
+- / redirige a /inicio; las rutas desconocidas tienen HTML 404 propio. Las fichas mantienen navegación React; IDs inválidos dependen de la respuesta de la API y no se indexan.
