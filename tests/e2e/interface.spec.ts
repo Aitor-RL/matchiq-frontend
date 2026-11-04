@@ -90,25 +90,28 @@ test('cargas accesibles y resultados anteriores identificados al cambiar filtros
 test('división y temporada sobreviven a enlaces, búsqueda, recarga y filtros', async ({ page }) => {
   const requests = await mockApi(page);
   await page.goto('/comparador?competition=fd-SP2&season=2024');
-  await expect(page.getByLabel('División', { exact: true })).toHaveValue('fd-SP2');
+  await expect(page.getByRole('group', { name: 'Seleccionar división' })).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'Frente a frente' })).toBeVisible();
   await page.getByRole('link', { name: 'Equipos', exact: true }).click();
   await expect(page).toHaveURL(/competition=fd-SP2/);
+  const divisionPicker = page.getByRole('group', { name: 'Seleccionar división' });
+  await expect(divisionPicker.getByRole('button', { name: /Segunda/ })).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('textbox', { name: 'Buscar equipos' }).fill('Bruma');
   await expect(page).toHaveURL(/season=2024/);
   await page.locator('.team-directory-card').first().click();
   await expect(page.getByRole('heading', { name: 'Bruma FC', exact: true })).toBeVisible();
   await expect(page).toHaveTitle(/Bruma FC/);
   await page.reload();
-  await expect(page.getByLabel('División', { exact: true })).toHaveValue('fd-SP2');
+  await expect(page.locator('.team-profile-heading .eyebrow')).toContainText('SEGUNDA DIVISIÓN');
   await page.getByRole('link', { name: 'Comparar equipo', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Frente a frente' })).toBeVisible();
   await page.getByLabel('Condición', { exact: true }).selectOption('away');
   await expect(page).toHaveURL(/competition=fd-SP2/);
   expect(requests.every((url) => url.searchParams.get('competition') === 'fd-SP2')).toBe(true);
-  await page.getByLabel('División', { exact: true }).selectOption('fd-SP1');
+  await page.goto('/equipos?competition=fd-SP2&season=2024');
+  await page.getByRole('group', { name: 'Seleccionar división' }).getByRole('button', { name: /Primera/ }).click();
   await expect(page).toHaveURL(/competition=fd-SP1/);
-  await expect(page.getByLabel('División', { exact: true })).toHaveValue('fd-SP1');
+  await expect(page.getByRole('group', { name: 'Seleccionar división' }).getByRole('button', { name: /Primera/ })).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('metadatos y filtros inválidos no indexables, movimiento reducido y diseño sin desbordes', async ({ page }) => {
@@ -153,8 +156,10 @@ test('copia una comparación completa y el enlace funciona sin memoria del naveg
   expect(copied.searchParams.get('a')).toBeTruthy();
   expect(copied.searchParams.get('b')).toBeTruthy();
   await page.goto(copied.href);
-  await expect(page.getByLabel('División', { exact: true })).toHaveValue('fd-SP2');
+  await expect(page).toHaveURL(/competition=fd-SP2/);
   await expect(page.getByLabel('Condición', { exact: true })).toHaveValue('away');
+  await page.goto('/equipos?competition=fd-SP2&season=2024');
+  await expect(page.getByRole('group', { name: 'Seleccionar división' }).getByRole('button', { name: /Segunda/ })).toHaveAttribute('aria-pressed', 'true');
 });
 
 test('una ficha no queda cargando para siempre si falla el catálogo', async ({ page }) => {
