@@ -4,23 +4,23 @@
   "rewrites": [
     {
       "source": "/inicio",
-      "destination": "/inicio.html"
+      "destination": "/index.html"
     },
     {
       "source": "/equipos",
-      "destination": "/equipos.html"
+      "destination": "/index.html"
     },
     {
       "source": "/comparador",
-      "destination": "/comparador.html"
+      "destination": "/index.html"
     },
     {
       "source": "/equipos/:id",
-      "destination": "/app.html"
+      "destination": "/index.html"
     },
     {
       "source": "/partidos/:id",
-      "destination": "/app.html"
+      "destination": "/index.html"
     }
   ],
   "headers": [
@@ -37,15 +37,6 @@
         }
       ]
     },
-    {
-      "source": "/app.html",
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex,follow"
-        }
-      ]
-    }
   ],
   "redirects": [
     {
