@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import type { Catalog } from '@matchiq/shared';
 
-const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api/v1').replace(/\/+$/, '');
+const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
 export class ApiError extends Error {
   constructor(message: string, public status: number) { super(message); }
 }
@@ -12,13 +12,23 @@ export function useCompetition() {
   return value && ['fd-SP1', 'fd-SP2'].includes(value) ? value : undefined;
 }
 export async function get<T>(path: string, signal?: AbortSignal, competition?: string): Promise<T> {
+  return request<T>(path, { signal, competition, method: 'GET', timeoutMs: 20000 });
+}
+
+export async function generateAnalysis<T>(path: string, competition?: string): Promise<T> {
+  return request<T>(path, { competition, method: 'POST', timeoutMs: 45000 });
+}
+
+async function request<T>(path: string, { signal, competition, method, timeoutMs }: {
+  signal?: AbortSignal; competition?: string; method: 'GET' | 'POST'; timeoutMs: number;
+}): Promise<T> {
   const [resource, query = ''] = path.split('?');
   const params = new URLSearchParams(query);
   if (competition) params.set('competition', competition);
-  const timeout = AbortSignal.timeout(20000);
+  const timeout = AbortSignal.timeout(timeoutMs);
   let response: Response;
   try {
-    response = await fetch(`${apiBase}/${resource}${params.size ? `?${params}` : ''}`, { signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
+    response = await fetch(`${apiBase}/${resource}${params.size ? `?${params}` : ''}`, { method, signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
   } catch (error) {
     if (signal?.aborted) throw error;
     throw new Error(timeout.aborted ? 'La consulta está tardando demasiado. Vuelve a intentarlo.' : 'No hemos podido conectar. Comprueba tu conexión e inténtalo de nuevo.');
@@ -33,3 +43,4 @@ export function useCatalog() {
   const competition = useCompetition();
   return useQuery({ queryKey: ['catalog', competition], queryFn: ({ signal }) => get<Catalog>('catalog', signal, competition) });
 }
+

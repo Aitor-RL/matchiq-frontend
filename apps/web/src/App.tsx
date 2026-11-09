@@ -105,7 +105,7 @@ function MetricValue({ metric }: { metric: Metric }) {
   return <div className="metric-value"><strong>{number(value.value, value.unit === '%' ? 0 : value.value !== null && !Number.isInteger(value.value) ? 2 : 1)}{value.unit === '%' && value.value !== null ? <small>%</small> : null}</strong><span>{value.valid}/{value.total} con dato</span></div>;
 }
 function MetricComparison({ data }: { data: Comparison }) {
-  const keys: MetricKey[] = ['goalsFor', 'goalsAgainst', 'halftimeGoalsFor', 'halftimeGoalsAgainst', 'xgFor', 'xgAgainst', 'shots', 'shotsOnTarget', 'corners', 'fouls', 'yellows', 'redCards', 'btts', 'over25'];
+  const keys: MetricKey[] = ['goalsFor', 'goalsAgainst', 'halftimeGoalsFor', 'halftimeGoalsAgainst', 'xgFor', 'xgAgainst', 'shots', 'shotsOnTarget', 'conversionRate', 'corners', 'fouls', 'yellows', 'redCards', 'btts', 'over25'];
   return <section className="panel metrics-panel" aria-labelledby="metrics-title"><div className="section-head"><h2 id="metrics-title"><BarChart3 size={19} />Frente a frente</h2><span className="eyebrow">MEDIAS Y PORCENTAJES</span></div>
     <div className="metrics-column-labels"><span><i className="dot green" />{data.a.team.shortName}</span><span>MÉTRICA</span><span>{data.b.team.shortName}<i className="dot purple-dot" /></span></div>
     {keys.map((key) => {
@@ -121,17 +121,9 @@ function MetricComparison({ data }: { data: Comparison }) {
 }
 
 const LazyTrendChart = lazy(() => import('./components/TrendChart'));
-function TrendChart(props: { summary: Comparison['a'] | (TeamSummary & { team: Team }) }) {
+const LazyAIReportPanel = lazy(() => import('./components/AIReportPanel'));
+function TrendChart(props: { summary?: Comparison['a'] | (TeamSummary & { team: Team }); comparison?: { a: Comparison['a']; b: Comparison['b'] } }) {
   return <Suspense fallback={<Loading kind="chart" />}><LazyTrendChart {...props} /></Suspense>;
-}
-
-function Reading({ data }: { data: Comparison }) {
-  const a = data.a, b = data.b;
-  return <section className="reading-panel"><div className="reading-label"><span className="reading-icon"><Target size={18} /></span>LECTURA DEL JUEGO<span className="tag">SIN IA</span></div><h2>LOS NÚMEROS<br />TIENEN ALGO<br />QUE CONTAR.</h2>
-    <p><strong>{a.team.name}</strong> registra <strong>{number(a.metrics.goalsFor.value)} goles a favor</strong> por encuentro en su muestra de {a.metrics.goalsFor.valid} partidos con dato.</p>
-    <p><strong>{b.team.name}</strong> registra <strong>{number(b.metrics.goalsFor.value)} goles</strong> por encuentro en {b.metrics.goalsFor.valid} partidos con dato.</p>
-    <div className="reading-note"><Info size={14} /><span>Resumen calculado, no una predicción. Muestras {data.provenance.mode === 'synthetic' ? 'sintéticas' : 'del proveedor'} de la temporada {seasonLabel(data.filters.season)}.</span></div>
-  </section>;
 }
 
 function FixtureList({ fixtures, teamId, empty = 'No hay partidos en esta selección.' }: { fixtures: FixtureView[]; teamId?: string; empty?: string }) {
@@ -164,8 +156,17 @@ function ComparePage() {
         {catalog.data.teams.length < 2 ? <p className="empty-state">Se necesitan al menos dos equipos importados para comparar.</p> : invalid ? <ErrorPanel message="Los filtros del enlace no son válidos. Restablécelos para continuar." retry={reset} /> : comparison.isPending ? <Loading /> : comparison.isError ? <ErrorPanel message={comparison.error.message} retry={() => void comparison.refetch()} /> : <>
           <div className="context-row"><span><Trophy size={14} />{catalog.data.competition.name.toLocaleUpperCase('es')} <span className="context-slash">/</span> {seasonLabel(comparison.data.filters.season)}</span><span><CalendarDays size={14} />Últimos {comparison.data.filters.last} · {comparison.data.filters.venue === 'all' ? 'Local + visitante' : comparison.data.filters.venue === 'home' ? 'Como local' : 'Como visitante'}</span></div>
           <div className="team-cards"><TeamCard summary={comparison.data.a} side="A" /><span className="versus" aria-hidden="true">VS</span><TeamCard summary={comparison.data.b} side="B" /></div>
+          {!comparison.isPlaceholderData && <Suspense fallback={<Loading kind="chart" />}>
+            <LazyAIReportPanel
+              key={JSON.stringify([competition, query, comparison.data.provenance.updatedAt])}
+              comparison={comparison.data}
+              competition={competition}
+              path={`compare/ai-analysis?${query}`}
+              season={seasonLabel(comparison.data.filters.season)}
+            />
+          </Suspense>}
           <div className="analysis-tabs" role="group" aria-label="Vista del análisis"><button aria-pressed={tab === 'metrics'} onClick={() => setTab('metrics')}><BarChart3 size={16} />Estadísticas</button><button aria-pressed={tab === 'history'} onClick={() => setTab('history')}><ArrowLeftRight size={16} />Enfrentamientos <span>{comparison.data.headToHead.length}</span></button><span className="sample-status"><i />MUESTRA DISPONIBLE</span></div>
-          {tab === 'metrics' ? <><MetricComparison data={comparison.data} /><div className="bottom-grid"><TrendChart summary={comparison.data.a} /><Reading data={comparison.data} /></div></> : <section className="panel"><div className="section-head"><div><h2>Historial entre equipos</h2><p>Todos sus enfrentamientos finalizados de {seasonLabel(comparison.data.filters.season)}. Independiente del filtro de últimos partidos y condición.</p></div></div><FixtureList fixtures={comparison.data.headToHead} /></section>}
+          {tab === 'metrics' ? <><MetricComparison data={comparison.data} /><div className="comparison-trend"><TrendChart comparison={{ a: comparison.data.a, b: comparison.data.b }} /></div></> : <section className="panel"><div className="section-head"><div><h2>Historial entre equipos</h2><p>Todos sus enfrentamientos finalizados de {seasonLabel(comparison.data.filters.season)}. Independiente del filtro de últimos partidos y condición.</p></div></div><FixtureList fixtures={comparison.data.headToHead} /></section>}
           <div className="sample-periods"><span><strong>{comparison.data.a.team.shortName}:</strong> {comparison.data.a.period.from ? `${date(comparison.data.a.period.from)} — ${date(comparison.data.a.period.to!)}` : 'Sin partidos'}</span><span><strong>{comparison.data.b.team.shortName}:</strong> {comparison.data.b.period.from ? `${date(comparison.data.b.period.from)} — ${date(comparison.data.b.period.to!)}` : 'Sin partidos'}</span></div>
           <ShareButton values={{ ...comparison.data.filters, a: comparison.data.a.team.id, b: comparison.data.b.team.id, ...(catalog.data.competition.id.startsWith('fd-') ? { competition: catalog.data.competition.id } : {}) }} disabled={comparison.isFetching} />
           <Source provenance={comparison.data.provenance} />

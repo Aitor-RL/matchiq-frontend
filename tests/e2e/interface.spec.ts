@@ -4,7 +4,7 @@ import fixture from '../fixtures/demo.json' with { type: 'json' };
 // Synthetic fixtures: no real clubs, third-party requests or credentials in UI tests.
 async function mockApi(page: Page, options: { catalogDelay?: number; comparisonDelay?: number; failComparison?: boolean } = {}) {
   const requests: URL[] = [];
-  await page.route('**/api/v1/**', async (route) => {
+  await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url()); requests.push(url);
     const division = url.searchParams.get('competition') || 'fd-SP1';
     const catalog = structuredClone(fixture.catalog);
@@ -163,8 +163,9 @@ test('copia una comparación completa y el enlace funciona sin memoria del naveg
 });
 
 test('una ficha no queda cargando para siempre si falla el catálogo', async ({ page }) => {
-  await page.route('**/api/v1/catalog*', (route) => route.fulfill({ status: 503, json: { error: 'Fuente de prueba no disponible.' } }));
+  await page.route('**/api/catalog*', (route) => route.fulfill({ status: 503, json: { error: 'Fuente de prueba no disponible.' } }));
   await page.goto('/equipos/bruma');
   await expect(page.getByRole('alert')).toContainText('Fuente de prueba no disponible.');
   await expect(page.getByRole('region', { name: 'Cargando la ficha del equipo' })).toHaveCount(0);
 });
+

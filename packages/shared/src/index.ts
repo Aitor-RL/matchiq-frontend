@@ -19,7 +19,7 @@ export type Fixture = {
   status: 'FT' | 'NS' | 'PST' | 'LIVE' | 'AET' | 'PEN' | 'CANC' | 'ABD' | 'SUSP' | 'AWD' | 'WO' | 'TBD' | 'OTHER'; home: SideStats; away: SideStats;
 };
 export type Metric = { value: number | null; valid: number; total: number; unit: 'por partido' | '%' };
-export type MetricKey = 'goalsFor' | 'goalsAgainst' | 'halftimeGoalsFor' | 'halftimeGoalsAgainst' | 'xgFor' | 'xgAgainst' | 'corners' | 'yellows' | 'redCards' | 'shots' | 'shotsOnTarget' | 'fouls' | 'btts' | 'over25';
+export type MetricKey = 'goalsFor' | 'goalsAgainst' | 'halftimeGoalsFor' | 'halftimeGoalsAgainst' | 'xgFor' | 'xgAgainst' | 'corners' | 'yellows' | 'redCards' | 'shots' | 'shotsOnTarget' | 'fouls' | 'conversionRate' | 'btts' | 'over25';
 export type TeamSummary = {
   teamId: string; total: number; metrics: Record<MetricKey, Metric>;
   results: { wins: number; draws: number; losses: number; valid: number };
@@ -37,8 +37,22 @@ export type Comparison = {
   headToHead: FixtureView[]; provenance: Provenance;
 };
 export type TeamDetail = { team: Team; summary: TeamSummary; fixtures: FixtureView[]; provenance: Provenance; filters: Filters };
+export const aiInsightSchema = z.object({
+  verdict: z.string().min(1).max(260),
+  keyNarratives: z.array(z.object({ category: z.enum(['attack_vs_defense', 'tempo_and_discipline', 'sample_alert', 'recent_form']), title: z.string().min(1).max(80), explanation: z.string().min(1).max(260), edge: z.enum(['a', 'b', 'neutral']) })).max(4),
+  matchFlow: z.string().min(1).max(320),
+  confidenceScore: z.number().int().min(0).max(100),
+  confidenceNote: z.string().min(1).max(160),
+  source: z.enum(['openrouter', 'heuristic']),
+  model: z.string().max(120).nullable(),
+  fallbackReason: z.enum(['no_key', 'local_rate_limit', 'client_rate_limit', 'provider_paused', 'storage_unavailable', 'provider_auth', 'provider_rate_limit', 'provider_error', 'invalid_response', 'request_timeout', 'request_error']).optional(),
+});
+export type AiInsight = z.infer<typeof aiInsightSchema>;
+export type AiAnalysis =
+  | { status: 'empty' | 'pending'; insight: null }
+  | { status: 'cached' | 'generated' | 'fallback'; insight: AiInsight };
 export const metricLabels: Record<MetricKey, string> = {
   goalsFor: 'Goles a favor', goalsAgainst: 'Goles en contra', halftimeGoalsFor: 'Goles al descanso a favor', halftimeGoalsAgainst: 'Goles al descanso en contra',
   xgFor: 'xG a favor', xgAgainst: 'xG en contra', corners: 'Córners a favor', yellows: 'Tarjetas amarillas', redCards: 'Tarjetas rojas',
-  shots: 'Tiros totales', shotsOnTarget: 'Tiros a puerta', fouls: 'Faltas cometidas', btts: 'Ambos marcan', over25: 'Más de 2,5 goles',
+  shots: 'Tiros totales', shotsOnTarget: 'Tiros a puerta', fouls: 'Faltas cometidas', conversionRate: 'Conversión de tiros', btts: 'Ambos marcan', over25: 'Más de 2,5 goles',
 };
