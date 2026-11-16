@@ -9,13 +9,20 @@ export const pageMeta = {
   '/equipos': { title: 'Equipos y estadísticas de fútbol | MatchIQ', description: 'Encuentra equipos de Primera y Segunda División y explora sus resultados, forma reciente y estadísticas por temporada.' },
   '/comparador': { title: 'Comparador de equipos de fútbol | MatchIQ', description: 'Compara dos equipos por goles, córners, amarillas y tiros. Filtra por temporada, últimos partidos y rendimiento local o visitante.' },
 } as const;
+const nonIndexablePages: Record<string, { title: string; description: string }> = {
+  '/login': { title: 'Iniciar sesión | MatchIQ', description: 'Accede a tu cuenta de MatchIQ.' },
+  '/registro': { title: 'Crear cuenta | MatchIQ', description: 'Crea una cuenta de MatchIQ.' },
+  '/recuperar': { title: 'Recuperar contraseña | MatchIQ', description: 'Recupera el acceso a tu cuenta de MatchIQ.' },
+  '/cuenta': { title: 'Mi cuenta | MatchIQ', description: 'Gestiona tu cuenta de MatchIQ.' },
+  '/informacion': { title: 'Información y metodología | MatchIQ', description: 'Consulta el origen de los datos y la metodología de MatchIQ.' },
+};
 export type Meta = { title: string; description: string; canonical: string; noindex: boolean };
 export function routeMeta(pathname: string, search = ''): Meta {
   const known = pageMeta[pathname as keyof typeof pageMeta];
   const dynamic = /^\/(equipos|partidos)\/[^/]+$/.test(pathname);
   const params = new URLSearchParams(search);
   const filtered = pathname !== '/inicio' && [...params.keys()].some((key) => !['utm_source', 'utm_medium', 'utm_campaign'].includes(key));
-  return { ...(known ?? { title: dynamic ? 'Estadísticas del encuentro y del equipo | MatchIQ' : 'Página no encontrada | MatchIQ', description: dynamic ? 'Consulta resultados y estadísticas de fútbol con su muestra, temporada y fuente.' : 'La página que buscas no existe. Explora equipos o vuelve al comparador de MatchIQ.' }), canonical: `${siteUrl}${pathname}`, noindex: !known || filtered };
+  return { ...(known ?? nonIndexablePages[pathname] ?? { title: dynamic ? 'Estadísticas del encuentro y del equipo | MatchIQ' : 'Página no encontrada | MatchIQ', description: dynamic ? 'Consulta resultados y estadísticas de fútbol con su muestra, temporada y fuente.' : 'La página que buscas no existe. Explora equipos o vuelve al comparador de MatchIQ.' }), canonical: `${siteUrl}${pathname}`, noindex: !known || filtered };
 }
 export function PageMeta({ title, description, noindex = false }: { title?: string; description?: string; noindex?: boolean }) {
   const location = useLocation();

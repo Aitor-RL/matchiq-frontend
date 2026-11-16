@@ -7,9 +7,9 @@
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir .ssr"
   },
   "dependencies": {
-    "@matchiq/shared": "workspace:*",
     "@fontsource/barlow": "^5.2.0",
     "@fontsource/barlow-condensed": "^5.2.0",
+    "@matchiq/shared": "workspace:*",
     "@tanstack/react-query": "^5.90.0",
     "lucide-react": "^0.468.0",
     "react": "^19.2.0",

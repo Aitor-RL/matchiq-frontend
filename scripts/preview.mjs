@@ -23,7 +23,7 @@ const server = http.createServer(async (req, res) => {
     if (url.pathname === '/') { res.writeHead(308, { Location: '/inicio' }); res.end(); return; }
     let name = decodeURIComponent(url.pathname);
     if (['/inicio', '/equipos', '/comparador'].includes(name)) name += '.html';
-    else if (/^\/(equipos|partidos)\/[^/]+$/.test(name)) name = '/app.html';
+    else if (['/cuenta', '/login', '/registro', '/recuperar', '/informacion'].includes(name) || /^\/(equipos|partidos)\/[^/]+$/.test(name)) name = '/app.html';
     const target = path.resolve(output, `.${name}`);
     if (!target.startsWith(output + path.sep)) { res.writeHead(404); res.end(); return; }
     let body; let status = 200;

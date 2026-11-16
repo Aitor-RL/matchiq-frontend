@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BrainCircuit, RefreshCw, Sparkles } from 'lucide-react';
 import type { AiAnalysis, AiInsight, Comparison } from '@matchiq/shared';
 import { generateAnalysis, get } from '../api';
+import { Link, useLocation } from 'react-router-dom';
+import { accountsEnabled, useAccount, useSession } from '../features/auth/Account';
 
 const categoryLabels: Record<AiInsight['keyNarratives'][number]['category'], string> = {
   attack_vs_defense: 'Ataque y defensa',
@@ -24,22 +26,41 @@ const fallbackLabels: Record<NonNullable<AiInsight['fallbackReason']>, string> =
   request_error: 'No se pudo completar la conexión con OpenRouter.',
 };
 
-export default function AIReportPanel({ comparison, competition, path, season }: {
+type ReportProps = {
   comparison: Comparison; competition?: string; path: string; season: string;
-}) {
+};
+
+export default function AIReportPanel(props: ReportProps) {
+  const session = useSession();
+  const account = useAccount(session);
+  const location = useLocation();
+  if (!accountsEnabled) return <Report {...props} />;
+  if (account.data?.pass) return <Report key={session?.user.id} {...props} token={session?.access_token} userId={session?.user.id} />;
+  return <section className="reading-panel ai-report">
+    <h2>Análisis IA</h2>
+    <p><strong>Ejemplo con datos ficticios.</strong> El Equipo A crea más ocasiones en casa, aunque la muestra reciente es de solo cinco partidos.</p>
+    {session && account.isFetching ? <p>Comprobando el pase…</p> : <Link className="button secondary"
+      to={`/cuenta?volver=${encodeURIComponent(location.pathname + location.search)}`}>
+      {session ? 'Consultar pase IA' : 'Entrar para desbloquear la IA'}
+    </Link>}
+  </section>;
+}
+
+function Report({ comparison, competition, path, season, token, userId }: ReportProps & { token?: string; userId?: string }) {
   const client = useQueryClient();
-  const queryKey = ['ai-insight', competition, path, comparison.provenance.updatedAt];
+  const queryKey = ['ai-insight', competition, path, comparison.provenance.updatedAt, userId];
   const saved = useQuery({
     queryKey,
-    queryFn: ({ signal }) => get<AiAnalysis>(path, signal, competition),
+    queryFn: ({ signal }) => get<AiAnalysis>(path, signal, competition, token),
     staleTime: 60_000,
     refetchInterval: (query) => query.state.data?.status === 'pending' && !query.state.error ? 3000 : false,
   });
   const generation = useMutation({
-    mutationFn: () => generateAnalysis<AiAnalysis>(path, competition),
+    mutationFn: () => generateAnalysis<AiAnalysis>(path, competition, token),
     onSuccess: async (result) => {
       await client.cancelQueries({ queryKey, exact: true });
       client.setQueryData(queryKey, result);
+      if (userId) void client.invalidateQueries({ queryKey: ['account', userId] });
     },
   });
 

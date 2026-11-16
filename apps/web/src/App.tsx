@@ -1,7 +1,9 @@
+import Account from './features/auth/Account';
+import ProfileMenu from './features/auth/ProfileMenu';
 import { lazy, Suspense, useEffect, useId, useState, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowLeftRight, ArrowUpRight, BarChart3, CalendarDays, Check, ChevronDown, CircleHelp, Database, FlaskConical, Info, ListFilter, RotateCcw, Search, SlidersHorizontal, Target, Trophy, X } from 'lucide-react';
+import { Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowLeftRight, ArrowUpRight, BarChart3, CalendarDays, Check, ChevronDown, Database, FlaskConical, Info, ListFilter, RotateCcw, Search, SlidersHorizontal, Target, Trophy } from 'lucide-react';
 import { filtersSchema, fixtureStatusLabels, metricLabels, type Catalog, type Comparison, type Filters, type FixtureView, type Metric, type MetricKey, type Provenance, type Team, type TeamDetail, type TeamSummary } from '@matchiq/shared';
 import { get, useCatalog, useCompetition } from './api';
 import { Link, NavLink } from './navigation';
@@ -30,7 +32,6 @@ function Source({ provenance }: { provenance: Provenance }) {
 }
 
 function Shell({ children }: { children: ReactNode }) {
-  const [showInfo, setShowInfo] = useState(false);
   const catalog = useCatalog();
   const synthetic = catalog.data?.provenance.mode !== 'provider';
   return <>
@@ -39,13 +40,27 @@ function Shell({ children }: { children: ReactNode }) {
     <header className="site-header"><div className="header-inner">
       <Link to="/inicio" className="wordmark" aria-label="MatchIQ, inicio"><img src="/brand/logo.svg" width="260" height="64" alt="" fetchPriority="high" /></Link>
       <nav aria-label="Navegación principal"><NavLink to="/inicio">Inicio</NavLink><NavLink to="/equipos">Equipos</NavLink><NavLink to="/comparador"><ArrowLeftRight size={17} />Comparador</NavLink></nav>
-      <div className="header-end"><span className="local-status"><i /> {catalog.isError ? 'Sin conexión' : catalog.data ? 'Datos con fuente' : 'Conectando'}</span><button className="icon-button" aria-label="Información de los datos" aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>{showInfo ? <X size={20} /> : <CircleHelp size={20} />}</button></div>
+      <div className="header-end"><ProfileMenu /></div>
     </div></header>
-    {showInfo && <aside className="info-drawer"><div><strong>Estás probando MatchIQ.</strong><p>{catalog.data?.provenance.note ?? 'Consultando el estado de los datos.'}</p><p>Los cálculos excluyen los valores ausentes y solo incluyen partidos finalizados en tiempo reglamentario. No hay actualización en directo.</p><p>MatchIQ es una plataforma independiente, sin afiliación ni patrocinio de clubes o competiciones. Los emblemas con iniciales son gráficos propios, no escudos oficiales.</p></div></aside>}
-    <div className="demo-strip"><Database size={14} /><strong>{!catalog.data ? 'ESTADO DE DATOS' : synthetic ? 'DATOS SINTÉTICOS' : 'DATOS IMPORTADOS'}</strong><span>{!catalog.data ? 'Consultando la fuente de datos' : synthetic ? 'Entorno de prueba · Equipos y resultados ficticios' : `${catalog.data.competition.name} · Fuente: ${catalog.data.provenance.source}`}</span><span className="strip-end">SIN ACTUALIZACIÓN EN DIRECTO <span aria-hidden="true">↗</span></span></div>
     <main id="contenido" className="page-container">{children}</main>
-    <footer className="site-footer"><Link className="footer-logo" to="/inicio" aria-label="MatchIQ, inicio"><img src="/brand/logo-mono.svg" width="260" height="64" alt="" loading="lazy" /></Link><span>El juego, en datos. Plataforma independiente.</span><span className="footer-demo"><Database size={13} /> {!catalog.data ? 'CONECTANDO' : synthetic ? 'DEMOSTRACIÓN' : 'DATOS IMPORTADOS'} · V0.3</span></footer>
+    <footer className="site-footer">
+      <Link className="footer-logo" to="/inicio" aria-label="MatchIQ, inicio"><img src="/brand/logo-mono.svg" width="260" height="64" alt="" loading="lazy" /></Link>
+      <Link to="/informacion">Información</Link>
+      <small className="footer-source">{catalog.data && (synthetic ? 'Datos ficticios de prueba' : `Datos importados · ${catalog.data.competition.name} · Fuente: ${catalog.data.provenance.source}`)}</small>
+    </footer>
   </>;
+}
+
+function InformationPage() {
+  const catalog = useCatalog();
+  return <section className="reading-panel">
+    <h1>Información</h1>
+    <p>MatchIQ es una plataforma independiente, sin afiliación ni patrocinio de clubes o competiciones.</p>
+    <h2>Datos y metodología</h2>
+    {catalog.data && <Source provenance={catalog.data.provenance} />}
+    <p>Las estadísticas excluyen los valores ausentes y solo incluyen partidos finalizados en tiempo reglamentario. Los datos se actualizan por lotes.</p>
+    <p>Los emblemas con iniciales son gráficos propios.</p>
+  </section>;
 }
 
 function useFilters() {
@@ -260,6 +275,5 @@ function HomePage() {
 }
 
 export default function App() {
-  return <Shell><Routes><Route path="/" element={<Navigate to="/inicio" replace />} /><Route path="/inicio" element={<HomePage />} /><Route path="/comparador" element={<ComparePage />} /><Route path="/equipos" element={<TeamsPage />} /><Route path="/equipos/:id" element={<TeamPage />} /><Route path="/partidos/:id" element={<FixturePage />} /><Route path="*" element={<div className="empty-state"><h1>FUERA DE JUEGO.</h1><p>Esta página no existe.</p><Link className="button primary" to="/comparador">Volver al comparador</Link></div>} /></Routes></Shell>;
+  return <Shell><Routes><Route path="/" element={<Navigate to="/inicio" replace />} /><Route path="/login" element={<Account key="login" initialMode="login" />} /><Route path="/registro" element={<Account key="register" initialMode="register" />} /><Route path="/recuperar" element={<Account key="reset" initialMode="reset" />} /><Route path="/cuenta" element={<Account />} /><Route path="/informacion" element={<InformationPage />} /><Route path="/inicio" element={<HomePage />} /><Route path="/comparador" element={<ComparePage />} /><Route path="/equipos" element={<TeamsPage />} /><Route path="/equipos/:id" element={<TeamPage />} /><Route path="/partidos/:id" element={<FixturePage />} /><Route path="*" element={<div className="empty-state"><h1>FUERA DE JUEGO.</h1><p>Esta página no existe.</p><Link className="button primary" to="/comparador">Volver al comparador</Link></div>} /></Routes></Shell>;
 }
-

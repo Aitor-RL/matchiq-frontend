@@ -11,16 +11,16 @@ export function useCompetition() {
   const value = params.get('competition');
   return value && ['fd-SP1', 'fd-SP2'].includes(value) ? value : undefined;
 }
-export async function get<T>(path: string, signal?: AbortSignal, competition?: string): Promise<T> {
-  return request<T>(path, { signal, competition, method: 'GET', timeoutMs: 20000 });
+export async function get<T>(path: string, signal?: AbortSignal, competition?: string, token?: string): Promise<T> {
+  return request<T>(path, { signal, competition, token, method: 'GET', timeoutMs: 20000 });
 }
 
-export async function generateAnalysis<T>(path: string, competition?: string): Promise<T> {
-  return request<T>(path, { competition, method: 'POST', timeoutMs: 45000 });
+export async function generateAnalysis<T>(path: string, competition?: string, token?: string): Promise<T> {
+  return request<T>(path, { competition, token, method: 'POST', timeoutMs: 45000 });
 }
 
-async function request<T>(path: string, { signal, competition, method, timeoutMs }: {
-  signal?: AbortSignal; competition?: string; method: 'GET' | 'POST'; timeoutMs: number;
+async function request<T>(path: string, { signal, competition, token, method, timeoutMs }: {
+  signal?: AbortSignal; competition?: string; token?: string; method: 'GET' | 'POST'; timeoutMs: number;
 }): Promise<T> {
   const [resource, query = ''] = path.split('?');
   const params = new URLSearchParams(query);
@@ -28,7 +28,7 @@ async function request<T>(path: string, { signal, competition, method, timeoutMs
   const timeout = AbortSignal.timeout(timeoutMs);
   let response: Response;
   try {
-    response = await fetch(`${apiBase}/${resource}${params.size ? `?${params}` : ''}`, { method, signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
+    response = await fetch(`${apiBase}/${resource}${params.size ? `?${params}` : ''}`, { method, headers: token ? { Authorization: `Bearer ${token}` } : undefined, signal: signal ? AbortSignal.any([signal, timeout]) : timeout });
   } catch (error) {
     if (signal?.aborted) throw error;
     throw new Error(timeout.aborted ? 'La consulta está tardando demasiado. Vuelve a intentarlo.' : 'No hemos podido conectar. Comprueba tu conexión e inténtalo de nuevo.');

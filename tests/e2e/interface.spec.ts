@@ -129,6 +129,53 @@ test('metadatos y filtros inválidos no indexables, movimiento reducido y diseñ
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
+test('las vistas y controles caben en móviles estrechos', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'La prueba usa un viewport de móvil estrecho.');
+  await page.setViewportSize({ width: 320, height: 740 });
+  await mockApi(page);
+
+  const checkWidth = async () => {
+    const viewport = await page.evaluate(() => ({
+      content: document.documentElement.scrollWidth,
+      width: document.documentElement.clientWidth,
+    }));
+    expect(viewport.content).toBeLessThanOrEqual(viewport.width);
+  };
+
+  await page.goto('/inicio');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('EL JUEGO CAMBIA.');
+  await checkWidth();
+  await page.getByRole('navigation').getByRole('link', { name: 'Comparador' }).tap();
+  await expect(page.getByRole('heading', { name: 'Frente a frente' })).toBeVisible();
+  const firstTeam = page.getByLabel('Primer equipo');
+  const secondTeam = page.getByLabel('Segundo equipo');
+  const secondValue = await secondTeam.inputValue();
+  await page.getByRole('button', { name: 'Intercambiar equipos' }).tap();
+  await expect(firstTeam).toHaveValue(secondValue);
+  await page.getByRole('button', { name: 'Ver tabla de datos' }).tap();
+  await expect(page.getByRole('table')).toBeVisible();
+  await checkWidth();
+  await page.getByRole('button', { name: /Enfrentamientos/ }).tap();
+  await expect(page.getByRole('heading', { name: 'Historial entre equipos' })).toBeVisible();
+  await checkWidth();
+
+  for (const [path, heading] of [
+    ['/equipos', 'CADA EQUIPO,'],
+    ['/equipos/bruma', fixture.team.team.name],
+    ['/partidos/prueba', 'EL PARTIDO,'],
+    ['/informacion', 'Información'],
+    ['/login', 'Iniciar sesión'],
+    ['/registro', 'Crear cuenta'],
+    ['/recuperar', 'Recuperar contraseña'],
+    ['/cuenta', 'Iniciar sesión'],
+    ['/pagina-no-encontrada', 'FUERA DE JUEGO.'],
+  ]) {
+    await page.goto(path);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(heading);
+    await checkWidth();
+  }
+});
+
 test('espera prolongada y movimiento reducido se comunican sin progreso ficticio', async ({ page }) => {
   await page.clock.install();
   await page.emulateMedia({ reducedMotion: 'reduce' });

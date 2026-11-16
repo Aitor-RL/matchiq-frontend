@@ -3,6 +3,10 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/:auth(cuenta|login|registro|recuperar|informacion)",
+      "destination": "/app.html"
+    },
+    {
       "source": "/inicio",
       "destination": "/inicio.html"
     },
