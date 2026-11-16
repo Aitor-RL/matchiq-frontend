@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import fixture from '../fixtures/demo.json' with { type: 'json' };
 
 // Synthetic fixtures: no real clubs, third-party requests or credentials in UI tests.
-async function mockApi(page: Page, options: { catalogDelay?: number; comparisonDelay?: number; failComparison?: boolean } = {}) {
+async function mockApi(page: Page, options: { catalogDelay?: number; comparisonDelay?: number; failComparison?: boolean; teamPosition?: number } = {}) {
   const requests: URL[] = [];
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url()); requests.push(url);
@@ -25,7 +25,7 @@ async function mockApi(page: Page, options: { catalogDelay?: number; comparisonD
     }
     if (url.pathname.includes('/teams/')) {
       const data = structuredClone(fixture.team); data.provenance = catalog.provenance;
-      await route.fulfill({ json: data }); return;
+      await route.fulfill({ json: { ...data, leaguePosition: { position: options.teamPosition ?? 4, points: 28, lastMatch: '2024-11-15T12:00:00Z' } } }); return;
     }
     if (url.pathname.includes('/fixtures/')) {
       const data = structuredClone(fixture.fixture); data.provenance = catalog.provenance;
@@ -172,7 +172,39 @@ test('las vistas y controles caben en móviles estrechos', async ({ page, isMobi
   ]) {
     await page.goto(path);
     await expect(page.getByRole('heading', { level: 1 })).toContainText(heading);
+    if (path === '/equipos/bruma') {
+      const position = page.getByRole('region', { name: 'Posición estimada en la liga' });
+      await expect(position).toContainText('4.º');
+      await expect(position).toContainText('28 pts');
+    }
     await checkWidth();
+  }
+});
+
+test('muestra los colores y etiquetas de las zonas de Primera en la ficha', async ({ page }) => {
+  const options = { teamPosition: 1 };
+  await mockApi(page, options);
+  const position = page.getByRole('region', { name: 'Posición estimada en la liga' });
+  const colors = { Campeón: 'gold', 'Champions League': 'blue', 'Europa League': 'orange', 'Conference League': 'green', Descenso: 'red' };
+  for (const [rank, division, zones] of [
+    [1, 'fd-SP1', ['Campeón', 'Champions League']],
+    [4, 'fd-SP1', ['Champions League']],
+    [5, 'fd-SP1', ['Europa League']],
+    [6, 'fd-SP1', ['Conference League']],
+    [7, 'fd-SP1', []],
+    [18, 'fd-SP1', ['Descenso']],
+    [20, 'fd-SP1', ['Descenso']],
+    [1, 'fd-SP2', []],
+  ] as const) {
+    options.teamPosition = rank;
+    await page.goto(`/equipos/bruma?competition=${division}`);
+    await expect(position).toContainText(`${rank}.º`);
+    const badges = position.locator('.team-position-zone');
+    await expect(badges).toHaveCount(zones.length);
+    for (const [index, label] of zones.entries()) {
+      await expect(badges.nth(index)).toHaveText(label);
+      await expect(badges.nth(index)).toHaveAttribute('data-zone', colors[label]);
+    }
   }
 });
 

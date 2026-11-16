@@ -1,5 +1,5 @@
 {
   "source": "packages/shared/src/index.ts",
-  "sha256": "031cc7f6b104be747551ed5077ececa3b66fafe70fc86743b7f166f6f1e73ba7",
+  "sha256": "01526ac38239ddf7f38b19d4a562b128fe99153b2f268c81c30c0c0fa870e18c",
   "note": "Copia idéntica en ambos repositorios. Al cambiar el contrato, actualizar y validar ambos antes de desplegar."
 }
