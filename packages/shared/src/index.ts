@@ -37,7 +37,9 @@ export type Comparison = {
   headToHead: FixtureView[]; provenance: Provenance;
 };
 export type LeaguePosition = { position: number; points: number; lastMatch: string };
-export type TeamDetail = { team: Team; summary: TeamSummary; fixtures: FixtureView[]; provenance: Provenance; filters: Filters; leaguePosition?: LeaguePosition | null };
+export type LeagueRow = { teamId: string; position: number; points: number; goalsFor: number; goalsAgainst: number; wins: number; draws: number; losses: number };
+export type LeagueTable = { lastMatch: string; rows: (LeagueRow & { team: Team })[] };
+export type TeamDetail = { team: Team; summary: TeamSummary; fixtures: FixtureView[]; provenance: Provenance; filters: Filters; leaguePosition?: LeaguePosition | null; leagueTable?: LeagueTable | null };
 export const aiInsightSchema = z.object({
   verdict: z.string().min(1).max(260),
   keyNarratives: z.array(z.object({ category: z.enum(['attack_vs_defense', 'tempo_and_discipline', 'sample_alert', 'recent_form']), title: z.string().min(1).max(80), explanation: z.string().min(1).max(260), edge: z.enum(['a', 'b', 'neutral']) })).max(4),

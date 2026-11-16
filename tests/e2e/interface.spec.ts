@@ -25,7 +25,13 @@ async function mockApi(page: Page, options: { catalogDelay?: number; comparisonD
     }
     if (url.pathname.includes('/teams/')) {
       const data = structuredClone(fixture.team); data.provenance = catalog.provenance;
-      await route.fulfill({ json: { ...data, leaguePosition: { position: options.teamPosition ?? 4, points: 28, lastMatch: '2024-11-15T12:00:00Z' } } }); return;
+      const lastMatch = '2024-11-15T12:00:00Z';
+      const position = options.teamPosition ?? 4;
+      const rows = catalog.teams.map((team, index) => ({
+        team, teamId: team.id, position: index + 1, points: 28 - index,
+        wins: 5, draws: 2, losses: 1, goalsFor: 13, goalsAgainst: 8,
+      }));
+      await route.fulfill({ json: { ...data, leaguePosition: { position, points: 28, lastMatch }, leagueTable: { rows, lastMatch } } }); return;
     }
     if (url.pathname.includes('/fixtures/')) {
       const data = structuredClone(fixture.fixture); data.provenance = catalog.provenance;
@@ -176,16 +182,25 @@ test('las vistas y controles caben en móviles estrechos', async ({ page, isMobi
       const position = page.getByRole('region', { name: 'Posición estimada en la liga' });
       await expect(position).toContainText('4.º');
       await expect(position).toContainText('28 pts');
+      await position.getByRole('link', { name: 'Ver clasificación' }).tap();
+      await expect(page).toHaveURL(/#clasificacion$/);
+      const standings = page.getByRole('region', { name: 'Clasificación estimada' });
+      await expect(standings.getByRole('list', { name: 'Leyenda de la clasificación' })).toContainText('Conference League');
+      await expect(standings.locator('tbody tr')).toHaveCount(fixture.catalog.teams.length);
+      await expect(standings.locator('tbody tr[aria-current="true"]')).toContainText(fixture.team.team.name);
     }
     await checkWidth();
   }
 });
 
-test('muestra los colores y etiquetas de las zonas de Primera en la ficha', async ({ page }) => {
+test('muestra los colores y etiquetas de Primera y Segunda en la ficha', async ({ page }) => {
   const options = { teamPosition: 1 };
   await mockApi(page, options);
   const position = page.getByRole('region', { name: 'Posición estimada en la liga' });
-  const colors = { Campeón: 'gold', 'Champions League': 'blue', 'Europa League': 'orange', 'Conference League': 'green', Descenso: 'red' };
+  const colors = {
+    Campeón: 'gold', 'Champions League': 'blue', 'Europa League': 'orange', 'Conference League': 'green',
+    'Ascenso a Primera División': 'dark-green', Promoción: 'light-green', Descenso: 'red',
+  };
   for (const [rank, division, zones] of [
     [1, 'fd-SP1', ['Campeón', 'Champions League']],
     [4, 'fd-SP1', ['Champions League']],
@@ -194,7 +209,14 @@ test('muestra los colores y etiquetas de las zonas de Primera en la ficha', asyn
     [7, 'fd-SP1', []],
     [18, 'fd-SP1', ['Descenso']],
     [20, 'fd-SP1', ['Descenso']],
-    [1, 'fd-SP2', []],
+    [1, 'fd-SP2', ['Ascenso a Primera División']],
+    [2, 'fd-SP2', ['Ascenso a Primera División']],
+    [3, 'fd-SP2', ['Promoción']],
+    [6, 'fd-SP2', ['Promoción']],
+    [7, 'fd-SP2', []],
+    [18, 'fd-SP2', []],
+    [19, 'fd-SP2', ['Descenso']],
+    [22, 'fd-SP2', ['Descenso']],
   ] as const) {
     options.teamPosition = rank;
     await page.goto(`/equipos/bruma?competition=${division}`);
@@ -206,6 +228,12 @@ test('muestra los colores y etiquetas de las zonas de Primera en la ficha', asyn
       await expect(badges.nth(index)).toHaveAttribute('data-zone', colors[label]);
     }
   }
+  await expect(page.getByRole('list', { name: 'Leyenda de la clasificación' }).getByRole('listitem')).toHaveText([
+    '1.º–2.º Ascenso a Primera División', '3.º–6.º Promoción', '19.º–22.º Descenso',
+  ]);
+  const ranks = page.getByRole('table').locator('.standings-rank');
+  await expect(ranks.nth(0)).toHaveAttribute('data-zone', 'dark-green');
+  await expect(ranks.nth(2)).toHaveAttribute('data-zone', 'light-green');
 });
 
 test('espera prolongada y movimiento reducido se comunican sin progreso ficticio', async ({ page }) => {
