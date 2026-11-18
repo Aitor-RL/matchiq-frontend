@@ -59,3 +59,36 @@ export const metricLabels: Record<MetricKey, string> = {
   xgFor: 'xG a favor', xgAgainst: 'xG en contra', corners: 'Córners a favor', yellows: 'Tarjetas amarillas', redCards: 'Tarjetas rojas',
   shots: 'Tiros totales', shotsOnTarget: 'Tiros a puerta', fouls: 'Faltas cometidas', conversionRate: 'Conversión de tiros', btts: 'Ambos marcan', over25: 'Más de 2,5 goles',
 };
+
+export const standingsQuerySchema = z.object({
+  season: z.string().regex(/^(19|20)\d{2}$/).optional(),
+  venue: z.enum(['all', 'home', 'away']).default('all'),
+});
+export type StandingsQuery = z.infer<typeof standingsQuerySchema>;
+
+export type StandingEntry = {
+  position: number;
+  team: Team;
+  played: number;
+  won: number;
+  drawn: number;
+  lost: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  goalDifference: number;
+  points: number;
+  form: ('W' | 'D' | 'L')[];
+};
+
+export type StandingsResponse = {
+  competition: Catalog['competition'];
+  season: string;
+  venue: 'all' | 'home' | 'away';
+  table: StandingEntry[];
+  leaders: {
+    firstPlace: StandingEntry | null;
+    topScorer: StandingEntry | null;
+    bestDefense: StandingEntry | null;
+  };
+  provenance: Provenance;
+};

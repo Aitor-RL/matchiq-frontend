@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
-import type { Catalog } from '@matchiq/shared';
+import type { Catalog, StandingsResponse } from '@matchiq/shared';
 
 const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
 export class ApiError extends Error {
@@ -42,5 +42,13 @@ async function request<T>(path: string, { signal, competition, token, method, ti
 export function useCatalog() {
   const competition = useCompetition();
   return useQuery({ queryKey: ['catalog', competition], queryFn: ({ signal }) => get<Catalog>('catalog', signal, competition) });
+}
+
+export function useStandings(season?: string, venue?: string) {
+  const competition = useCompetition();
+  return useQuery({
+    queryKey: ['standings', competition, season, venue],
+    queryFn: ({ signal }) => get<StandingsResponse>(`standings?season=${season ?? ''}&venue=${venue ?? 'all'}`, signal, competition),
+  });
 }
 

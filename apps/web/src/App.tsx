@@ -3,9 +3,9 @@ import ProfileMenu from './features/auth/ProfileMenu';
 import { lazy, Suspense, useEffect, useId, useState, type ReactNode } from 'react';
 import { Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowLeftRight, ArrowUpRight, BarChart3, CalendarDays, Check, ChevronDown, Database, FlaskConical, Info, ListFilter, RotateCcw, Search, SlidersHorizontal, Target, Trophy } from 'lucide-react';
+import { Activity, ArrowDown, ArrowLeft, ArrowRight, ArrowLeftRight, ArrowUpRight, BarChart3, CalendarDays, Check, ChevronDown, Database, Flame, FlaskConical, Info, ListFilter, RotateCcw, Search, Shield, SlidersHorizontal, Target, Trophy } from 'lucide-react';
 import { filtersSchema, fixtureStatusLabels, metricLabels, type Catalog, type Comparison, type Filters, type FixtureView, type Metric, type MetricKey, type Provenance, type Team, type TeamDetail, type TeamSummary } from '@matchiq/shared';
-import { get, useCatalog, useCompetition } from './api';
+import { get, useCatalog, useCompetition, useStandings } from './api';
 import { Link, NavLink } from './navigation';
 import { Loading, Updating } from './components/Loading';
 import { PageMeta } from './seo';
@@ -40,7 +40,7 @@ function Shell({ children }: { children: ReactNode }) {
     <a href="#contenido" className="skip-link">Saltar al contenido</a>
     <header className="site-header"><div className="header-inner">
       <Link to="/inicio" className="wordmark" aria-label="MatchIQ, inicio"><img src="/brand/logo.svg" width="260" height="64" alt="" fetchPriority="high" /></Link>
-      <nav aria-label="Navegación principal"><NavLink to="/inicio">Inicio</NavLink><NavLink to="/equipos">Equipos</NavLink><NavLink to="/comparador"><ArrowLeftRight size={17} />Comparador</NavLink></nav>
+      <nav aria-label="Navegación principal"><NavLink to="/inicio">Inicio</NavLink><NavLink to="/clasificacion"><Trophy size={17} />Clasificación</NavLink><NavLink to="/equipos">Equipos</NavLink><NavLink to="/comparador"><ArrowLeftRight size={17} />Comparador</NavLink></nav>
       <div className="header-end"><ProfileMenu /></div>
     </div></header>
     <main id="contenido" className="page-container">{children}</main>
@@ -280,20 +280,266 @@ function ShareButton({ values, disabled }: { values: Record<string, string>; dis
   return <div className="share-row"><button className="text-button" disabled={disabled} onClick={() => void copy()}><ArrowUpRight size={16} />Copiar enlace de esta comparación</button><span role="status" aria-live="polite">{state}</span>{manual && <input className="share-url" readOnly value={manual} aria-label="Enlace completo de la comparación" onFocus={(event) => event.target.select()} />}</div>;
 }
 
+function StandingsPage() {
+  const catalog = useCatalog();
+  const [params, setParams] = useSearchParams();
+  const defaultSeason = catalog.data?.seasons[0] ?? '2024';
+  const season = params.get('season') ?? defaultSeason;
+  const venue = (params.get('venue') ?? 'all') as 'all' | 'home' | 'away';
+
+  const standings = useStandings(season, venue);
+
+  const updateFilters = (patch: Record<string, string>) => {
+    const next = new URLSearchParams(params);
+    Object.entries(patch).forEach(([key, value]) => next.set(key, value));
+    setParams(next);
+  };
+
+  const synthetic = catalog.data?.provenance.mode === 'synthetic';
+
+  return (
+    <>
+      <div className="page-heading">
+        <div>
+          <div className="eyebrow">
+            <span className="small-cross">✳</span> TABLA DE POSICIONES
+          </div>
+          <h1>
+            CLASIFICACIÓN <span>GENERAL.</span>
+          </h1>
+          <p>
+            Sigue el pulso de la liga, los puntos en juego, la forma reciente y el rendimiento en casa o fuera.
+          </p>
+        </div>
+        <div className="heading-index">
+          <span>TABLA / 001</span>
+          <Trophy size={28} />
+        </div>
+      </div>
+
+      <div className="standings-toolbar">
+        <div className="standings-toolbar-controls">
+          <SelectField
+            label="Temporada"
+            value={season}
+            onChange={(val) => updateFilters({ season: val })}
+          >
+            {catalog.data?.seasons.map((s) => (
+              <option key={s} value={s}>
+                {seasonLabel(s)}{synthetic ? ' · demo' : ''}
+              </option>
+            ))}
+          </SelectField>
+
+          <div>
+            <label className="select-field" style={{ marginBottom: 7, fontSize: 12, fontWeight: 600, display: 'block' }}>
+              Condición
+            </label>
+            <div className="standings-venue-segmented" role="group" aria-label="Filtro de condición">
+              <button
+                aria-pressed={venue === 'all'}
+                onClick={() => updateFilters({ venue: 'all' })}
+              >
+                Total
+              </button>
+              <button
+                aria-pressed={venue === 'home'}
+                onClick={() => updateFilters({ venue: 'home' })}
+              >
+                Solo Casa
+              </button>
+              <button
+                aria-pressed={venue === 'away'}
+                onClick={() => updateFilters({ venue: 'away' })}
+              >
+                Solo Fuera
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="competition-label" style={{ margin: 0 }}>
+          <Trophy size={16} />
+          <span>
+            {catalog.data?.competition.name}
+            <small>
+              {catalog.data?.provenance.mode === 'synthetic'
+                ? 'Competición de prueba'
+                : catalog.data?.competition.country}
+            </small>
+          </span>
+        </div>
+      </div>
+
+      {standings.isPending ? (
+        <Loading />
+      ) : standings.isError ? (
+        <ErrorPanel
+          message={standings.error.message}
+          retry={() => void standings.refetch()}
+        />
+      ) : (
+        <>
+          <div className="standings-leaders-grid">
+            {standings.data.leaders.firstPlace && (
+              <article className="leader-card leader-first">
+                <div className="leader-card-header">
+                  <span className="leader-tag">
+                    <Trophy size={13} /> Líder de la Liga
+                  </span>
+                  <span style={{ background: '#111', color: '#c5f451', padding: '2px 8px', borderRadius: 4, fontSize: 11, fontWeight: 800 }}>1º</span>
+                </div>
+                <div className="leader-card-body">
+                  <Badge team={standings.data.leaders.firstPlace.team} />
+                  <div>
+                    <h3>{standings.data.leaders.firstPlace.team.name}</h3>
+                    <p>{standings.data.leaders.firstPlace.points} PUNTOS</p>
+                  </div>
+                </div>
+                <div className="leader-card-metric">
+                  <span>Balance: {standings.data.leaders.firstPlace.won}V - {standings.data.leaders.firstPlace.drawn}E - {standings.data.leaders.firstPlace.lost}D</span>
+                  <strong>{standings.data.leaders.firstPlace.goalDifference > 0 ? `+${standings.data.leaders.firstPlace.goalDifference}` : standings.data.leaders.firstPlace.goalDifference} DG</strong>
+                </div>
+              </article>
+            )}
+
+            {standings.data.leaders.topScorer && (
+              <article className="leader-card">
+                <div className="leader-card-header">
+                  <span className="leader-tag">
+                    <Flame size={13} color="#e65100" /> Máxima Potencia Ofensiva
+                  </span>
+                </div>
+                <div className="leader-card-body">
+                  <Badge team={standings.data.leaders.topScorer.team} purple />
+                  <div>
+                    <h3>{standings.data.leaders.topScorer.team.name}</h3>
+                    <p>{standings.data.leaders.topScorer.goalsFor} GOLES A FAVOR</p>
+                  </div>
+                </div>
+                <div className="leader-card-metric">
+                  <span>Media de goles</span>
+                  <strong>{standings.data.leaders.topScorer.played ? number(standings.data.leaders.topScorer.goalsFor / standings.data.leaders.topScorer.played) : '0'} / partido</strong>
+                </div>
+              </article>
+            )}
+
+            {standings.data.leaders.bestDefense && (
+              <article className="leader-card">
+                <div className="leader-card-header">
+                  <span className="leader-tag">
+                    <Shield size={13} color="#2e7d32" /> Mejor Bloque Defensivo
+                  </span>
+                </div>
+                <div className="leader-card-body">
+                  <Badge team={standings.data.leaders.bestDefense.team} />
+                  <div>
+                    <h3>{standings.data.leaders.bestDefense.team.name}</h3>
+                    <p>{standings.data.leaders.bestDefense.goalsAgainst} GOLES EN CONTRA</p>
+                  </div>
+                </div>
+                <div className="leader-card-metric">
+                  <span>Goles encajados</span>
+                  <strong>{standings.data.leaders.bestDefense.played ? number(standings.data.leaders.bestDefense.goalsAgainst / standings.data.leaders.bestDefense.played) : '0'} / partido</strong>
+                </div>
+              </article>
+            )}
+          </div>
+
+          <div className="standings-table-wrap">
+            <table className="standings-table">
+              <thead>
+                <tr>
+                  <th className="center" style={{ width: 48 }}>Pos</th>
+                  <th>Equipo</th>
+                  <th className="center">PTS</th>
+                  <th className="center">PJ</th>
+                  <th className="center">V</th>
+                  <th className="center">E</th>
+                  <th className="center">D</th>
+                  <th className="center">GF</th>
+                  <th className="center">GC</th>
+                  <th className="center">DG</th>
+                  <th>Últimos 5</th>
+                  <th className="right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {standings.data.table.map((row) => {
+                  const isFirst = row.position === 1;
+                  const otherTeam = standings.data.table.find((t) => t.team.id !== row.team.id)?.team.id ?? '';
+                  return (
+                    <tr key={row.team.id} className={isFirst ? 'champion-row' : ''}>
+                      <td className="center">
+                        <span className={`standings-pos ${isFirst ? 'pos-1' : row.position <= 3 ? 'pos-podium' : ''}`}>
+                          {row.position}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="standings-team-cell">
+                          <Badge team={row.team} small purple={row.position % 2 === 0} />
+                          <Link to={`/equipos/${row.team.id}`}>
+                            {row.team.name}
+                            <ArrowUpRight size={14} />
+                          </Link>
+                        </div>
+                      </td>
+                      <td className="center">
+                        <span className="standings-pts">{row.points}</span>
+                      </td>
+                      <td className="center"><strong>{row.played}</strong></td>
+                      <td className="center">{row.won}</td>
+                      <td className="center">{row.drawn}</td>
+                      <td className="center">{row.lost}</td>
+                      <td className="center">{row.goalsFor}</td>
+                      <td className="center">{row.goalsAgainst}</td>
+                      <td className="center">
+                        <span className={row.goalDifference > 0 ? 'gd-positive' : row.goalDifference < 0 ? 'gd-negative' : 'gd-neutral'}>
+                          {row.goalDifference > 0 ? `+${row.goalDifference}` : row.goalDifference}
+                        </span>
+                      </td>
+                      <td>
+                        <Form values={row.form} />
+                      </td>
+                      <td className="right">
+                        <div className="standings-actions">
+                          <Link
+                            to={`/comparador?a=${row.team.id}&b=${otherTeam}&season=${season}`}
+                            className="standings-action-btn"
+                            title={`Comparar ${row.team.name}`}
+                          >
+                            <ArrowLeftRight size={13} /> Comparar
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <Source provenance={standings.data.provenance} />
+        </>
+      )}
+    </>
+  );
+}
+
 function HomePage() {
   const catalog = useCatalog();
   return <>
     <section className="home-hero">
-      <div className="hero-copy"><div className="eyebrow"><span className="small-cross">✳</span> FÚTBOL. DATOS. PERSPECTIVA.</div><h1>EL JUEGO CAMBIA.<br /><span>EL DATO CUENTA.</span></h1><p>Dos equipos. Una pregunta.<br />Pon goles, xG, tiros y tarjetas en contexto.</p><div className="hero-actions"><Link className="button primary" to="/comparador">Comparar equipos<ArrowRight size={19} /></Link><Link className="button" to="/equipos">Explorar equipos<ArrowUpRight size={18} /></Link></div></div>
+      <div className="hero-copy"><div className="eyebrow"><span className="small-cross">✳</span> FÚTBOL. DATOS. PERSPECTIVA.</div><h1>EL JUEGO CAMBIA.<br /><span>EL DATO CUENTA.</span></h1><p>Dos equipos. Una pregunta.<br />Pon goles, xG, tiros y tarjetas en contexto.</p><div className="hero-actions"><Link className="button primary" to="/clasificacion"><Trophy size={19} />Ver clasificación</Link><Link className="button" to="/comparador">Comparar equipos<ArrowRight size={19} /></Link><Link className="button" to="/equipos">Explorar equipos<ArrowUpRight size={18} /></Link></div></div>
       <div className="hero-pitch" aria-hidden="true"><div className="pitch-top"><span>MATCHIQ / VISIÓN DE JUEGO</span><span>↗</span></div><svg viewBox="0 0 300 260" fill="none"><rect x="24" y="15" width="252" height="225" rx="4" stroke="currentColor" strokeWidth="2"/><path d="M24 128h252M93 15v40h114V15M93 240v-40h114v40" stroke="currentColor" strokeWidth="2"/><circle cx="150" cy="128" r="34" stroke="currentColor" strokeWidth="2"/><path d="m59 186 58-44 50 14 70-64" stroke="#111" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="59" cy="186" r="7" fill="#111"/><circle cx="117" cy="142" r="7" fill="#111"/><circle cx="167" cy="156" r="7" fill="#111"/><circle cx="237" cy="92" r="9" fill="#7544db"/></svg><div className="pitch-bottom"><span>EL CONTEXTO<br />TAMBIÉN JUEGA.</span><img src="/brand/symbol.svg" width="44" height="44" alt="" /></div></div>
-      <div className="hero-bottom"><span>01 / EXPLORA</span><span>02 / COMPARA</span><span>03 / ENTIENDE</span></div>
+      <div className="hero-bottom"><span>01 / CLASIFICACIÓN</span><span>02 / COMPARA</span><span>03 / ENTIENDE</span></div>
     </section>
     <section className="data-overview" aria-label="Contexto de los datos disponibles"><div><span>COMPETICIÓN</span><strong>{catalog.data?.competition.name ?? (catalog.isError ? 'Fuente no disponible' : 'Consultando…')}</strong></div><div><span>EQUIPOS DISPONIBLES</span><strong>{catalog.data?.teams.length ?? '—'}</strong></div><div><span>TEMPORADA MÁS RECIENTE</span><strong>{catalog.data?.seasons[0] ? seasonLabel(catalog.data.seasons[0]) : '—'}</strong></div><div><span>EN CADA ESTADÍSTICA</span><strong>Muestra + periodo</strong></div></section>
-    <div className="home-cards"><article className="panel"><Database /><h2>DATOS CON CONTEXTO.</h2><p>Cada estadística incluye su muestra y periodo. Los datos ausentes no se convierten en ceros.</p></article><article className="panel"><ListFilter /><h2>TU PREGUNTA. TU FILTRO.</h2><p>Compara temporadas, últimos partidos y rendimiento local o visitante.</p></article><article className="panel"><Target /><h2>CLARIDAD EN EL CAMPO.</h2><p>{catalog.data?.provenance.mode === 'provider' ? 'Datos del proveedor con fuente y fecha de importación visibles. Sin afiliación con los clubes.' : catalog.data ? 'Los datos ficticios de demostración se identifican siempre como tales.' : 'La fuente y la fecha de importación acompañan a las estadísticas. Sin actualizaciones en directo.'}</p></article></div>
+    <div className="home-cards"><article className="panel"><Trophy /><h2>TABLA Y LÍDERES.</h2><p>Puntos, rendimiento local/visitante y dinámicas de rachas de los equipos en una sola vista.</p></article><article className="panel"><Database /><h2>DATOS CON CONTEXTO.</h2><p>Cada estadística incluye su muestra y periodo. Los datos ausentes no se convierten en ceros.</p></article><article className="panel"><ListFilter /><h2>TU PREGUNTA. TU FILTRO.</h2><p>Compara temporadas, últimos partidos y rendimiento local o visitante.</p></article><article className="panel"><Target /><h2>CLARIDAD EN EL CAMPO.</h2><p>{catalog.data?.provenance.mode === 'provider' ? 'Datos del proveedor con fuente y fecha de importación visibles. Sin afiliación con los clubes.' : catalog.data ? 'Los datos ficticios de demostración se identifican siempre como tales.' : 'La fuente y la fecha de importación acompañan a las estadísticas. Sin actualizaciones en directo.'}</p></article></div>
     <section className="home-method"><div><span className="eyebrow">ANTES DE SACAR CONCLUSIONES</span><h2>LEE LA MUESTRA.<br /><span>ENTIENDE EL NÚMERO.</span></h2><p>Una media de cinco partidos cuenta una historia distinta a una temporada completa. MatchIQ muestra qué estás comparando.</p><Link className="text-button" to="/comparador">Ponlo a prueba <ArrowRight size={17} /></Link></div><div className="method-questions"><details><summary>¿Qué estadísticas puedo comparar?</summary><p>Goles a favor y en contra, córners, amarillas, tiros totales, ambos equipos marcan y partidos con más de 2,5 goles, según los datos disponibles.</p></details><details><summary>¿Qué partidos entran en la muestra?</summary><p>Solo partidos finalizados en tiempo reglamentario de la temporada seleccionada. Primero se filtra local o visitante y después se eligen los últimos 5, 10 o 20.</p></details><details><summary>¿Qué ocurre si falta un dato?</summary><p>Se muestra como ausente y se excluye de la media correspondiente. Cada métrica indica cuántos partidos tienen dato; los ceros válidos sí cuentan.</p></details></div></section>
   </>;
 }
 
 export default function App() {
-  return <Shell><Routes><Route path="/" element={<Navigate to="/inicio" replace />} /><Route path="/login" element={<Account key="login" initialMode="login" />} /><Route path="/registro" element={<Account key="register" initialMode="register" />} /><Route path="/recuperar" element={<Account key="reset" initialMode="reset" />} /><Route path="/cuenta" element={<Account />} /><Route path="/informacion" element={<InformationPage />} /><Route path="/inicio" element={<HomePage />} /><Route path="/comparador" element={<ComparePage />} /><Route path="/equipos" element={<TeamsPage />} /><Route path="/equipos/:id" element={<TeamPage />} /><Route path="/partidos/:id" element={<FixturePage />} /><Route path="*" element={<div className="empty-state"><h1>FUERA DE JUEGO.</h1><p>Esta página no existe.</p><Link className="button primary" to="/comparador">Volver al comparador</Link></div>} /></Routes></Shell>;
+  return <Shell><Routes><Route path="/" element={<Navigate to="/clasificacion" replace />} /><Route path="/login" element={<Account key="login" initialMode="login" />} /><Route path="/registro" element={<Account key="register" initialMode="register" />} /><Route path="/recuperar" element={<Account key="reset" initialMode="reset" />} /><Route path="/cuenta" element={<Account />} /><Route path="/informacion" element={<InformationPage />} /><Route path="/inicio" element={<HomePage />} /><Route path="/clasificacion" element={<StandingsPage />} /><Route path="/comparador" element={<ComparePage />} /><Route path="/equipos" element={<TeamsPage />} /><Route path="/equipos/:id" element={<TeamPage />} /><Route path="/partidos/:id" element={<FixturePage />} /><Route path="*" element={<div className="empty-state"><h1>FUERA DE JUEGO.</h1><p>Esta página no existe.</p><Link className="button primary" to="/comparador">Volver al comparador</Link></div>} /></Routes></Shell>;
 }
